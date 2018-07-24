@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>564562063159-sjv5tlb1bea5p03ri0p12s3089rfc32q.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.564562063159-sjv5tlb1bea5p03ri0p12s3089rfc32q</string>
+	<key>API_KEY</key>
+	<string>AIzaSyC84kCBOOLxBObRoXus-RANxoodDC86Smg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>564562063159</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.yohanberg.Line-Up-App</string>
+	<key>PROJECT_ID</key>
+	<string>line-up-app</string>
+	<key>STORAGE_BUCKET</key>
+	<string>line-up-app.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true></true>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false></false>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:564562063159:ios:4fd9d665ebcd6d65</string>
+	<key>DATABASE_URL</key>
+	<string>https://line-up-app.firebaseio.com</string>
+</dict>
+</plist>
