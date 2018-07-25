@@ -13,6 +13,11 @@
 		FA2A0C61210654C900C28559 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA2A0C5F210654C900C28559 /* Main.storyboard */; };
 		FA2A0C63210654C900C28559 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA2A0C62210654C900C28559 /* Assets.xcassets */; };
 		FA2A0C66210654C900C28559 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA2A0C64210654C900C28559 /* LaunchScreen.storyboard */; };
+		FA50B70E2107E28400E7C425 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50B70D2107E28400E7C425 /* User.swift */; };
+		FA50B7102107E2C900E7C425 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50B70F2107E2C900E7C425 /* Constants.swift */; };
+		FA50B7122107E38A00E7C425 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50B7112107E38A00E7C425 /* UserService.swift */; };
+		FA50B7142107E41600E7C425 /* createUsernameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50B7132107E41600E7C425 /* createUsernameViewController.swift */; };
+		FA50B7172107E54E00E7C425 /* Storyboard+Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50B7162107E54E00E7C425 /* Storyboard+Utility.swift */; };
 		FAB6670B21065B370077DB3A /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAB6670A21065B370077DB3A /* Login.storyboard */; };
 		FAB6670D21068AD00077DB3A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAB6670C21068AD00077DB3A /* GoogleService-Info.plist */; };
 		FAB667112107974C0077DB3A /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB667102107974C0077DB3A /* LoginViewController.swift */; };
@@ -32,6 +37,11 @@
 		FA2A0C62210654C900C28559 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FA2A0C65210654C900C28559 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FA2A0C67210654CA00C28559 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA50B70D2107E28400E7C425 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		FA50B70F2107E2C900E7C425 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		FA50B7112107E38A00E7C425 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
+		FA50B7132107E41600E7C425 /* createUsernameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = createUsernameViewController.swift; sourceTree = "<group>"; };
+		FA50B7162107E54E00E7C425 /* Storyboard+Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Storyboard+Utility.swift"; sourceTree = "<group>"; };
 		FAB6670A21065B370077DB3A /* Login.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		FAB6670C21068AD00077DB3A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FAB667102107974C0077DB3A /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -92,6 +102,7 @@
 		FA2A0C5A210654C900C28559 /* Line Up App */ = {
 			isa = PBXGroup;
 			children = (
+				FA50B7152107E53800E7C425 /* Extensions */,
 				FAB6670F21069AD00077DB3A /* Services */,
 				FAB6670E21069ACA0077DB3A /* Models */,
 				FAB667072106564A0077DB3A /* Supporting Files */,
@@ -103,13 +114,22 @@
 			path = "Line Up App";
 			sourceTree = "<group>";
 		};
+		FA50B7152107E53800E7C425 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				FA50B7162107E54E00E7C425 /* Storyboard+Utility.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		FAB66705210655E20077DB3A /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				FA2A0C5D210654C900C28559 /* HomeViewController.swift */,
+				FA50B7132107E41600E7C425 /* createUsernameViewController.swift */,
 				FAB667102107974C0077DB3A /* LoginViewController.swift */,
-				FAB6671221079FB10077DB3A /* CreateLineViewController.swift */,
 				FAB667142107A0620077DB3A /* DisplayLineViewController.swift */,
+				FAB6671221079FB10077DB3A /* CreateLineViewController.swift */,
 				FAB667162107A0E10077DB3A /* ManageLineViewController.swift */,
 				FAB667182107AA750077DB3A /* ListLinesTableViewCell.swift */,
 			);
@@ -131,6 +151,7 @@
 			children = (
 				FAB6670C21068AD00077DB3A /* GoogleService-Info.plist */,
 				FA2A0C67210654CA00C28559 /* Info.plist */,
+				FA50B70F2107E2C900E7C425 /* Constants.swift */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -138,6 +159,7 @@
 		FAB6670E21069ACA0077DB3A /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				FA50B70D2107E28400E7C425 /* User.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -145,6 +167,7 @@
 		FAB6670F21069AD00077DB3A /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				FA50B7112107E38A00E7C425 /* UserService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -291,10 +314,15 @@
 				FAB667192107AA750077DB3A /* ListLinesTableViewCell.swift in Sources */,
 				FAB6671321079FB10077DB3A /* CreateLineViewController.swift in Sources */,
 				FAB667112107974C0077DB3A /* LoginViewController.swift in Sources */,
+				FA50B7172107E54E00E7C425 /* Storyboard+Utility.swift in Sources */,
 				FA2A0C5E210654C900C28559 /* HomeViewController.swift in Sources */,
+				FA50B70E2107E28400E7C425 /* User.swift in Sources */,
 				FAB667172107A0E10077DB3A /* ManageLineViewController.swift in Sources */,
+				FA50B7122107E38A00E7C425 /* UserService.swift in Sources */,
+				FA50B7142107E41600E7C425 /* createUsernameViewController.swift in Sources */,
 				FAB667152107A0620077DB3A /* DisplayLineViewController.swift in Sources */,
 				FA2A0C5C210654C900C28559 /* AppDelegate.swift in Sources */,
+				FA50B7102107E2C900E7C425 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

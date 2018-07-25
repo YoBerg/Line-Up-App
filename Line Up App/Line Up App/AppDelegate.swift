@@ -14,16 +14,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
         FirebaseApp.configure()
-        let storyboard = UIStoryboard(name: "Login", bundle: .main)
         
-        if let initialViewController = storyboard.instantiateInitialViewController() {
-            window?.rootViewController = initialViewController
-            window?.makeKeyAndVisible()
-        }
+        configureInitialRootViewController(for: window)
         
         return true
     }
@@ -50,6 +44,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-
 }
 
+extension AppDelegate {
+    func configureInitialRootViewController(for window: UIWindow?) {
+        let defaults = UserDefaults.standard
+        let initialViewController: UIViewController
+        
+        if let _ = Auth.auth().currentUser,
+            let userData = defaults.object(forKey: Constants.UserDefaults.currentUser) as? Data,
+            let user = try? JSONDecoder().decode(User.self, from: userData) {
+            User.setCurrent(user)
+            initialViewController = UIStoryboard.initialViewController(for: .main)
+        } else {
+            initialViewController = UIStoryboard.initialViewController(for: .login)
+        }
+        
+        window?.rootViewController = initialViewController
+        window?.makeKeyAndVisible()
+    }
+}

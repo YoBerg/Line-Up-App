@@ -10,16 +10,22 @@ import UIKit
 
 class HomeViewController: UIViewController {
 
+    @IBAction func signOutButtonTapped(_ sender: UIBarButtonItem) {
+        
+        //Clear UserDefault
+        let domain = Bundle.main.bundleIdentifier!
+        UserDefaults.standard.removePersistentDomain(forName: domain)
+        UserDefaults.standard.synchronize()
+        
+        //Segue back to Login storyboard
+        let initialViewController = UIStoryboard.initialViewController(for: .login)
+        self.view.window?.rootViewController = initialViewController
+        self.view.window?.makeKeyAndVisible()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-
 }
 

@@ -51,11 +51,75 @@
                     <navigationItem key="navigationItem" id="EGH-2u-Ncx"/>
                     <connections>
                         <outlet property="loginButton" destination="QIg-nK-dnE" id="LbI-gN-Dfv"/>
+                        <segue destination="vNk-GE-e1D" kind="show" identifier="toCreateUsername" id="A97-vZ-tyo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aWH-jX-eGi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-5623.1999999999998" y="-332.38380809595208"/>
+            <point key="canvasLocation" x="-5660" y="-332"/>
+        </scene>
+        <!--Create Username View Controller-->
+        <scene sceneID="aed-gu-w7J">
+            <objects>
+                <viewController id="vNk-GE-e1D" customClass="createUsernameViewController" customModule="Line_Up_App" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="PZW-sE-cAO">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="18" translatesAutoresizingMaskIntoConstraints="NO" id="5ra-Hk-eIV">
+                                <rect key="frame" x="35" y="109" width="305" height="155"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rQI-sh-Ve6">
+                                        <rect key="frame" x="131.5" y="0.0" width="42" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4bX-pD-4m2">
+                                        <rect key="frame" x="131.5" y="38.5" width="42" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="VM0-di-RP9">
+                                        <rect key="frame" x="0.0" y="77" width="305" height="30"/>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ugT-4v-TVb">
+                                        <rect key="frame" x="0.0" y="125" width="305" height="30"/>
+                                        <state key="normal" title="Button"/>
+                                        <connections>
+                                            <action selector="nextButtonTapped:" destination="vNk-GE-e1D" eventType="touchUpInside" id="Ue0-T6-tzp"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="ugT-4v-TVb" firstAttribute="leading" secondItem="5ra-Hk-eIV" secondAttribute="leading" id="5dg-dj-1Dp"/>
+                                    <constraint firstAttribute="trailing" secondItem="ugT-4v-TVb" secondAttribute="trailing" id="PMj-7v-gTO"/>
+                                    <constraint firstAttribute="trailing" secondItem="VM0-di-RP9" secondAttribute="trailing" id="VXp-qk-LZL"/>
+                                    <constraint firstItem="VM0-di-RP9" firstAttribute="leading" secondItem="5ra-Hk-eIV" secondAttribute="leading" id="q5a-tB-bZZ"/>
+                                </constraints>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="5ra-Hk-eIV" firstAttribute="leading" secondItem="WR3-LD-Z03" secondAttribute="leading" constant="35" id="2CP-Ja-lx6"/>
+                            <constraint firstItem="5ra-Hk-eIV" firstAttribute="top" secondItem="WR3-LD-Z03" secondAttribute="top" constant="45" id="4ve-c4-Pad"/>
+                            <constraint firstItem="5ra-Hk-eIV" firstAttribute="centerX" secondItem="WR3-LD-Z03" secondAttribute="centerX" id="D9U-ST-zmq"/>
+                            <constraint firstItem="WR3-LD-Z03" firstAttribute="trailing" secondItem="5ra-Hk-eIV" secondAttribute="trailing" constant="35" id="ShB-mt-Yw5"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="WR3-LD-Z03"/>
+                    </view>
+                    <connections>
+                        <outlet property="nextButton" destination="ugT-4v-TVb" id="VYv-GE-r7I"/>
+                        <outlet property="usernameTextField" destination="VM0-di-RP9" id="ow4-r6-bj3"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="GaS-dC-z84" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-4879" y="-332"/>
         </scene>
     </scenes>
 </document>
