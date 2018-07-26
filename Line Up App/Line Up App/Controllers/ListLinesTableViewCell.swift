@@ -10,4 +10,8 @@ import UIKit
 
 class ListLinesTableViewCell: UITableViewCell {
     
+    @IBOutlet weak var LineNameLabel: UILabel!
+    @IBOutlet weak var WaitTimeLabel: UILabel!
+    @IBOutlet weak var LineCreatorLabel: UILabel!
+    
 }

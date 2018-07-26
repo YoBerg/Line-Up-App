@@ -18,6 +18,8 @@
 		FA50B7122107E38A00E7C425 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50B7112107E38A00E7C425 /* UserService.swift */; };
 		FA50B7142107E41600E7C425 /* createUsernameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50B7132107E41600E7C425 /* createUsernameViewController.swift */; };
 		FA50B7172107E54E00E7C425 /* Storyboard+Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50B7162107E54E00E7C425 /* Storyboard+Utility.swift */; };
+		FA50B71B2108FD0600E7C425 /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50B71A2108FD0500E7C425 /* Line.swift */; };
+		FA50B71F210949F400E7C425 /* ClosableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50B71E210949F400E7C425 /* ClosableTextField.swift */; };
 		FAB6670B21065B370077DB3A /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAB6670A21065B370077DB3A /* Login.storyboard */; };
 		FAB6670D21068AD00077DB3A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAB6670C21068AD00077DB3A /* GoogleService-Info.plist */; };
 		FAB667112107974C0077DB3A /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB667102107974C0077DB3A /* LoginViewController.swift */; };
@@ -42,6 +44,8 @@
 		FA50B7112107E38A00E7C425 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		FA50B7132107E41600E7C425 /* createUsernameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = createUsernameViewController.swift; sourceTree = "<group>"; };
 		FA50B7162107E54E00E7C425 /* Storyboard+Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Storyboard+Utility.swift"; sourceTree = "<group>"; };
+		FA50B71A2108FD0500E7C425 /* Line.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
+		FA50B71E210949F400E7C425 /* ClosableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosableTextField.swift; sourceTree = "<group>"; };
 		FAB6670A21065B370077DB3A /* Login.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		FAB6670C21068AD00077DB3A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FAB667102107974C0077DB3A /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -118,6 +122,7 @@
 			isa = PBXGroup;
 			children = (
 				FA50B7162107E54E00E7C425 /* Storyboard+Utility.swift */,
+				FA50B71E210949F400E7C425 /* ClosableTextField.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -160,6 +165,7 @@
 			isa = PBXGroup;
 			children = (
 				FA50B70D2107E28400E7C425 /* User.swift */,
+				FA50B71A2108FD0500E7C425 /* Line.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -315,7 +321,9 @@
 				FAB6671321079FB10077DB3A /* CreateLineViewController.swift in Sources */,
 				FAB667112107974C0077DB3A /* LoginViewController.swift in Sources */,
 				FA50B7172107E54E00E7C425 /* Storyboard+Utility.swift in Sources */,
+				FA50B71B2108FD0600E7C425 /* Line.swift in Sources */,
 				FA2A0C5E210654C900C28559 /* HomeViewController.swift in Sources */,
+				FA50B71F210949F400E7C425 /* ClosableTextField.swift in Sources */,
 				FA50B70E2107E28400E7C425 /* User.swift in Sources */,
 				FAB667172107A0E10077DB3A /* ManageLineViewController.swift in Sources */,
 				FA50B7122107E38A00E7C425 /* UserService.swift in Sources */,

@@ -10,13 +10,14 @@ import Foundation
 import FirebaseAuth
 import FirebaseDatabase
 
-class createUsernameViewController: UIViewController {
+class createUsernameViewController: UIViewController, UITextFieldDelegate {
     
-    @IBOutlet weak var usernameTextField: UITextField!
+    @IBOutlet weak var usernameTextField: ClosableTextField!
     @IBOutlet weak var nextButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        usernameTextField.delegate = self
     }
     
     @IBAction func nextButtonTapped(_ sender: UIButton) {
@@ -36,5 +37,12 @@ class createUsernameViewController: UIViewController {
             self.view.window?.rootViewController = initialViewController
             self.view.window?.makeKeyAndVisible()
         }
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let currentString: NSString = textField.text! as NSString
+        let newString: NSString =
+            currentString.replacingCharacters(in: range, with: string) as NSString
+        return newString.length <= 12
     }
 }

@@ -15,4 +15,7 @@ struct Constants {
     struct UserDefaults {
         static let currentUser = "currentUser"
     }
+    struct TableViewCell {
+        static let ListLinesTableViewCell = "ListLinesTableViewCell"
+    }
 }
