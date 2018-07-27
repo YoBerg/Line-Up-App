@@ -39,7 +39,7 @@ class User: Codable {
         guard let currentUser = _current else {
             fatalError("Error: current user doesn't exist")
         }
-        
+
         // 4
         return currentUser
     }

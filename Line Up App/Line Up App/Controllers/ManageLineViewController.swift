@@ -7,11 +7,62 @@
 //
 
 import UIKit
+import FirebaseDatabase
 
 class ManageLineViewController: UIViewController {
+    
+    var managedLine: String?
+    var hidingNavBarState: Bool = true
+    
+    @IBOutlet weak var lineNameLabel: UILabel!
+    @IBOutlet weak var numberOfMembersLabel: UILabel!
+    @IBOutlet weak var waitTimeLabel: UILabel!
+    @IBOutlet weak var navigationBarFromHome: UINavigationBar!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        let lineRef = Database.database().reference().child("lines").child(managedLine!)
+        lineRef.observeSingleEvent(of: .value) { (snapshot) in
+            let lineDict = snapshot.value as! [String : Any]
+            self.waitTimeLabel.text = String(lineDict["waitTime"] as! Int)
+            let members = lineDict["members"] as? [String: Bool]
+            let lineDictMembers = members != nil || members?.count == 0 ? Array(members!.keys) : []
+            let numberOfMembers: Int = lineDictMembers.count
+            self.numberOfMembersLabel.text = "\(numberOfMembers) / \(lineDict["maxMembers"] ?? 0)"
+        }
+        self.lineNameLabel.text = managedLine!
+        self.navigationBarFromHome.isHidden = hidingNavBarState
+    }
+    
+    @IBAction func unwindWithSegue(segue: UIStoryboardSegue) {
+    }
+    @IBAction func hidingHomeButtonPressed(_ sender: Any) {
+        dismiss(animated: true) {
+            print("returning home...")
+        }
+    }
+    
+    @IBAction func homeButtonPressed(_ sender: Any) {
+        self.performSegue(withIdentifier: "unwindWithSegue", sender: self)
+    }
+    
+    @IBAction func deleteLineButtonPressed(_ sender: Any) {
+        createErrorPopUp("Deleting line \(managedLine!)")
+        Database.database().reference().child("lines").child(managedLine!).setValue(nil)
+        Database.database().reference().child("users").child(User.current.uid).child("hostedLines").child(managedLine!).setValue(nil)
+        self.performSegue(withIdentifier: "unwindWithSegue", sender: self)
+        dismiss(animated: true) {
+            print("returning home...")
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "unwindWithSegue" {
+            let createLineViewController = segue.destination as! CreateLineViewController
+            createLineViewController.forceUnwindSegue()
+        }
     }
 }

@@ -11,36 +11,45 @@ import FirebaseDatabase
 
 class CreateLineViewController: UIViewController, UITextFieldDelegate {
     
-    let currentUser = User.current
-    
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var maxMembersTextField: UITextField!
     @IBOutlet weak var waitTimeTextFieldHours: UITextField!
     @IBOutlet weak var waitTimeTextFieldMinutes: UITextField!
     @IBOutlet weak var waitTimeTextFieldSeconds: UITextField!
     
+    @IBAction func unwindWithSegue(segue: UIStoryboardSegue) {
+    }
+    @IBAction func forceUnwindButtonPressed(_ sender: Any) {
+        forceUnwindSegue()
+    }
+    
     @IBAction func createLineButtonPressed(_ sender: Any) {
+        let currentUser = User.current
         let rootRef = Database.database().reference()
         let lineRef = rootRef.child("lines")
+        let userRef = rootRef.child("users").child(currentUser.uid)
         if nameTextField.text == nil || nameTextField.text == "" {
-            createErrorPopUp("nameTextField is empty!")
-            return
+            nameTextField.text = nameTextField.placeholder
         }
         let lineName: String = nameTextField.text!
         guard let maxMembers: Int = Int(maxMembersTextField.text!) else {
-            createErrorPopUp("maxMembersTextField is empty!")
+            createErrorPopUp("Please specify the amount of total members your line can have.")
+            return
+        }
+        if maxMembers == 0 {
+            createErrorPopUp("You must allow more than 0 members in your line!")
             return
         }
         guard let waitTimeHours: Int = Int(waitTimeTextFieldHours.text!) else {
-            createErrorPopUp("waitTimeTextFieldHours is empty!")
+            createErrorPopUp("Please specify the amount of hours the average wait would take.")
             return
         }
         guard let waitTimeMinutes: Int = Int(waitTimeTextFieldMinutes.text!) else {
-            createErrorPopUp("waitTimeTextFieldMinutes is empty!")
+            createErrorPopUp("Please specify the amount of minutes the average wait would take.")
             return
         }
         guard let waitTimeSeconds: Int = Int(waitTimeTextFieldSeconds.text!) else {
-            self.createErrorPopUp("waitTimeTextFieldSeconds is empty!")
+            createErrorPopUp("Please specify the amount of seconds the average wait would take.")
             return
         }
         lineRef.child(lineName).observeSingleEvent(of: .value, with: { (snapshot) in
@@ -48,8 +57,9 @@ class CreateLineViewController: UIViewController, UITextFieldDelegate {
                 self.createErrorPopUp("line named \(lineName) already exists!")
                 return
             } else {
-                lineRef.child(lineName).setValue(["creator": self.currentUser.username, "maxMembers": maxMembers, "waitTime": waitTimeHours*3600+waitTimeMinutes*60+waitTimeSeconds])
-                return
+                lineRef.child(lineName).setValue(["creator": currentUser.username, "maxMembers": maxMembers, "waitTime": waitTimeHours*3600+waitTimeMinutes*60+waitTimeSeconds])
+                userRef.child("hostedLines").child(lineName).setValue(true)
+                self.performSegue(withIdentifier: "manageLine", sender: self)
             }
         })
     }
@@ -73,14 +83,13 @@ class CreateLineViewController: UIViewController, UITextFieldDelegate {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        let currentUser = User.current
         nameTextField.delegate = self
         maxMembersTextField.delegate = self
         waitTimeTextFieldHours.delegate = self
         waitTimeTextFieldMinutes.delegate = self
         waitTimeTextFieldSeconds.delegate = self
-        nameTextField.placeholder = "\(currentUser.username)'s Line"
-        
-        
+        nameTextField.placeholder = "\(currentUser.username)s Line"
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -99,7 +108,18 @@ class CreateLineViewController: UIViewController, UITextFieldDelegate {
         return true
     }
     
-    func createErrorPopUp(_ message: String) {
-        print(message)
+    func forceUnwindSegue() {
+        dismiss(animated: true) {
+            print("did unwind")
+        }
+        print("unwinding")
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "manageLine" {
+            let controller = segue.destination as! ManageLineViewController
+            controller.managedLine = self.nameTextField.text!
+            controller.hidingNavBarState = true
+        }
     }
 }
