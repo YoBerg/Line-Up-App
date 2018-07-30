@@ -10,11 +10,12 @@ import Foundation
 
 class Line {
     
-    var name: String
+    let name: String
     var waitTime: Int
     var members: Array<String>
     var maxMembers: Int
-    var creator: String
+    let creator: String
+    var mySpot: Int?
     
     init(name: String, waitTime: Int, members: Array<String>, maxMembers: Int, creator: String) {
         self.name = name
@@ -22,6 +23,7 @@ class Line {
         self.members = members
         self.maxMembers = maxMembers
         self.creator = creator
+        self.mySpot = nil
     }
     
 }

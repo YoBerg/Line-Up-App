@@ -52,7 +52,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 print(lineDict.debugDescription)
                 
                 //using a Ternary Operator to return value of members if it isn't nil and [] if it is.
-                let members = lineDict["members"] as? [String: Bool]
+                let members = lineDict["members"] as? [String: Int]
                 let membersArray: [String] = members != nil ? Array(members!.keys) : []
                 
                 self.lines = []
@@ -81,8 +81,43 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                         // 5
                         if let lineDict = snapshotB.value as? [String : Any] {
                             // 6
-                            let members = lineDict["members"] as? [String: Bool]
-                            let membersArray: [String] = Array(members!.keys) != [] || members != nil ? Array(members!.keys) : []
+                            let members = lineDict["members"] as? [String: Int]
+                            let membersArray: [String] = members != nil ? Array(members!.keys) : []
+                            self.lines.append(Line(name: lineName.key, waitTime: lineDict["waitTime"] as! Int, members: membersArray, maxMembers: lineDict["maxMembers"] as! Int, creator: lineDict["creator"] as! String))
+                        }
+                    })
+                }
+            }
+        })
+        /*
+         1: created a snapshot containing the hosted line names JSON from the Firebase database.
+         2: created a dict from the JSON we pulled from the Firebase database.
+         3: cycling through every lineName owned by the user.
+         4: created another snapshot containing the lines that match the hosted line names JSON from the Firebase Database.
+         5: created a dict from the JSON we pulled from the Firebase database.
+         6: populated the lines array with the information we have from the dict.
+         */
+    }
+    
+    @IBAction func findUserQueuedLinesButtonPressed(_ sender: Any) {
+        let currentUser = User.current
+        let rootRef = Database.database().reference()
+        let linesRef = rootRef.child("lines")
+        let userRef = rootRef.child("users").child(currentUser.uid)
+        self.lines = []
+        // 1
+        userRef.child("queuedLines").observeSingleEvent(of: .value, with: { (snapshotA) in
+            // 2
+            if let queuedLineDict = snapshotA.value as? [String : Any] {
+                // 3
+                for lineName in queuedLineDict {
+                    // 4
+                    linesRef.child(lineName.key).observeSingleEvent(of: .value, with: { (snapshotB) in
+                        // 5
+                        if let lineDict = snapshotB.value as? [String : Any] {
+                            // 6
+                            let members = lineDict["members"] as? [String: Int]
+                            let membersArray: [String] = members != nil ? Array(members!.keys) : []
                             self.lines.append(Line(name: lineName.key, waitTime: lineDict["waitTime"] as! Int, members: membersArray, maxMembers: lineDict["maxMembers"] as! Int, creator: lineDict["creator"] as! String))
                         }
                     })

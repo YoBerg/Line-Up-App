@@ -28,7 +28,7 @@ class ManageLineViewController: UIViewController {
         lineRef.observeSingleEvent(of: .value) { (snapshot) in
             let lineDict = snapshot.value as! [String : Any]
             self.waitTimeLabel.text = String(lineDict["waitTime"] as! Int)
-            let members = lineDict["members"] as? [String: Bool]
+            let members = lineDict["members"] as? [String: Int]
             let lineDictMembers = members != nil || members?.count == 0 ? Array(members!.keys) : []
             let numberOfMembers: Int = lineDictMembers.count
             self.numberOfMembersLabel.text = "\(numberOfMembers) / \(lineDict["maxMembers"] ?? 0)"
@@ -63,6 +63,26 @@ class ManageLineViewController: UIViewController {
         if segue.identifier == "unwindWithSegue" {
             let createLineViewController = segue.destination as! CreateLineViewController
             createLineViewController.forceUnwindSegue()
+        }
+    }
+    
+    @IBAction func refreshButtonPressed(_ sender: Any) {
+        let lineRef = Database.database().reference().child("lines").child(managedLine!)
+        lineRef.observe(.value) { (snapshot) in
+            if let lineDict = snapshot.value as? [String : Any] {
+                let membersFromDict = lineDict["members"] as? [String: Int]
+                let members: [String: Int] = membersFromDict != nil ? membersFromDict! : [:]
+                let waitTime = lineDict["waitTime"] as! Int
+                let maxMembers = lineDict["maxMembers"] as! Int
+                self.numberOfMembersLabel.text = "\(members.count) / \(maxMembers)"
+                self.waitTimeLabel.text = String(waitTime * members.count)
+            } else {
+                self.createErrorPopUp("Line no longer exists!")
+                self.performSegue(withIdentifier: "unwindWithSegue", sender: self)
+                self.dismiss(animated: true) {
+                    print("returning home...")
+                }
+            }
         }
     }
 }

@@ -138,6 +138,9 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OnK-bl-qsv">
                                         <rect key="frame" x="0.0" y="0.0" width="187.5" height="64"/>
                                         <state key="normal" title="Lines I'm In"/>
+                                        <connections>
+                                            <action selector="findUserQueuedLinesButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ggr-Bm-Arz"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BLE-xQ-kip">
                                         <rect key="frame" x="187.5" y="0.0" width="187.5" height="64"/>
@@ -382,6 +385,11 @@
                                 <action selector="homeButtonPressed:" destination="0ZW-kv-zOo" id="uZZ-h4-x7G"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="Ktk-WN-vfG">
+                            <connections>
+                                <action selector="refreshButtonPressed:" destination="0ZW-kv-zOo" id="BWk-PA-F4G"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="lineNameLabel" destination="qHd-M3-7jF" id="3qu-q9-Kmf"/>
@@ -448,19 +456,19 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Hour" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="pjm-ff-51S">
-                                        <rect key="frame" x="160" y="0.0" width="63.5" height="30"/>
+                                        <rect key="frame" x="160" y="0.0" width="63" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=":" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ItQ-Rh-WvT">
-                                        <rect key="frame" x="223.5" y="0.0" width="5" height="30"/>
+                                        <rect key="frame" x="223" y="0.0" width="5" height="30"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Min" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="SVl-OH-1bd">
-                                        <rect key="frame" x="228.5" y="0.0" width="62.5" height="30"/>
+                                        <rect key="frame" x="228" y="0.0" width="62.5" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
@@ -469,13 +477,13 @@
                                         </connections>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=":" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eS8-BL-kNh">
-                                        <rect key="frame" x="291" y="0.0" width="5" height="30"/>
+                                        <rect key="frame" x="290.5" y="0.0" width="5" height="30"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Sec" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="YCn-sc-kdX">
-                                        <rect key="frame" x="296" y="0.0" width="63" height="30"/>
+                                        <rect key="frame" x="295.5" y="0.0" width="63.5" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" keyboardType="numberPad"/>

@@ -44,33 +44,55 @@ class DisplayLineViewController: UIViewController {
             interactButton.setTitle("Take a spot", for: .normal)
         }
     }
+    
     @IBAction func interactButtonPressed(_ sender: Any) {
-        if managedLine!.members.contains(User.current.uid) {
-            Database.database().reference().child("lines").child(managedLine!.name).child("members").child(User.current.uid).setValue(nil)
-            interactButton.setTitle("Take a spot", for: .normal)
-            Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+        let memberRef = Database.database().reference().child("lines").child(managedLine!.name).child("members")
+        let userRef = Database.database().reference().child("users").child(User.current.uid).child("queuedLines")
+        
+        memberRef.observeSingleEvent(of: .value) { (snapshot) in
+            
+            let memberDict: [String: Int] = self.isNsnullOrNil(snapshot.value) == false ? snapshot.value as! [String : Int] : [:]
+            let memberArray: [String] = memberDict.map{$0.key}
+            
+            if memberArray.contains(User.current.uid) {
+                print("User is a member, leaving line.")
+                let userValue = memberDict[User.current.uid]
+                
+                for member in memberDict {
+                    if member.value > userValue! {
+                        memberRef.child(member.key).setValue(member.value-1)
+                    }
+                }
+                
+                memberRef.child(User.current.uid).setValue(nil)
+                userRef.child(self.managedLine!.name).setValue(nil)
+            } else {
+                print("User is not a member, joining line.")
+                
+                memberRef.child(User.current.uid).setValue(memberArray.count)
+                userRef.child(self.managedLine!.name).setValue(true)
+            }
+            Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { (_) in
                 self.refreshButtonPressed(self)
-            }
-        } else {
-            refreshButtonPressed(self)
-            if managedLine!.members.count >= managedLine!.maxMembers {
-                createErrorPopUp("Line is full!")
-                return
-            }
-            Database.database().reference().child("lines").child(managedLine!.name).child("members").child(User.current.uid).setValue(true)
-            interactButton.setTitle("Leave line", for: .normal)
-            Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
-                self.refreshButtonPressed(self)
-            }
+            })
         }
     }
     
     @IBAction func refreshButtonPressed(_ sender: Any) {
+        
         let lineRef = Database.database().reference().child("lines").child(managedLine!.name)
         lineRef.observe(.value) { (snapshot) in
-            if let lineDict = snapshot.value as? [String : Any] {
-                let members = lineDict["members"] as? [String: Bool]
-                self.managedLine!.members = members != nil ? Array(members!.keys) : []
+            
+            if let lineDict = snapshot.value as? [String: Any] {
+                
+                //creating array of member uids from lineDict
+                let memberDict: [String: Int] = lineDict["members"] != nil ? lineDict["members"] as! [String : Int] : [:]
+                let memberArray: [String] = memberDict.map{$0.key}
+                
+                //re-assigning variables
+                self.managedLine!.maxMembers = lineDict["maxMembers"] as! Int
+                self.managedLine!.waitTime = lineDict["waitTime"] as! Int
+                self.managedLine!.members = memberArray
             } else {
                 self.createErrorPopUp("Line no longer exists!")
                 self.dismiss(animated: true, completion: {
@@ -78,7 +100,16 @@ class DisplayLineViewController: UIViewController {
                 })
             }
         }
-        numberOfMembersLabel.text = "\(managedLine!.members.count) / \(managedLine!.maxMembers)"
+        //refreshing labels
+        
+        lineNameLabel.text = managedLine!.name
+        creatorNameLabel.text = managedLine!.creator
         waitTimeLabel.text = String(managedLine!.waitTime * managedLine!.members.count)
+        numberOfMembersLabel.text = "\(managedLine!.members.count) / \(managedLine!.maxMembers)"
+        if managedLine!.members.contains(User.current.uid) {
+            interactButton.setTitle("Leave line", for: .normal)
+        } else {
+            interactButton.setTitle("Take a spot", for: .normal)
+        }
     }
 }
