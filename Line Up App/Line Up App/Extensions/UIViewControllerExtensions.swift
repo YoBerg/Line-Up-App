@@ -13,6 +13,11 @@ extension UIViewController {
         print(message)
     }
     
+    func confirmAction(_ message: String) -> Bool {
+        print(message)
+        return true
+    }
+    
     func isNsnullOrNil(_ object : Any?) -> Bool {
         if let _: Any = object {
             return true

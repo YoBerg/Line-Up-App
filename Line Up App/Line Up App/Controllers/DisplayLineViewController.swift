@@ -46,13 +46,16 @@ class DisplayLineViewController: UIViewController {
     }
     
     @IBAction func interactButtonPressed(_ sender: Any) {
-        let memberRef = Database.database().reference().child("lines").child(managedLine!.name).child("members")
+        let lineRef = Database.database().reference().child("lines").child(managedLine!.name)
         let userRef = Database.database().reference().child("users").child(User.current.uid).child("queuedLines")
         
-        memberRef.observeSingleEvent(of: .value) { (snapshot) in
-            
-            let memberDict: [String: Int] = self.isNsnullOrNil(snapshot.value) == false ? snapshot.value as! [String : Int] : [:]
+        lineRef.observeSingleEvent(of: .value) { (snapshot) in
+            let lineDict = snapshot.value as! [String: Any]
+            let memberDict: [String: Int] = self.isNsnullOrNil(lineDict["members"]) ? lineDict["members"] as! [String : Int] : [:]
             let memberArray: [String] = memberDict.map{$0.key}
+            let bannedDict: [String: Any] = self.isNsnullOrNil(lineDict["bannedMembers"]) ? lineDict["bannedMembers"] as! [String: Any] : [:]
+            let bannedArray: [String] = bannedDict.map{$0.key}
+            let maxMembers: Int = lineDict["maxMembers"] as! Int
             
             if memberArray.contains(User.current.uid) {
                 print("User is a member, leaving line.")
@@ -60,16 +63,26 @@ class DisplayLineViewController: UIViewController {
                 
                 for member in memberDict {
                     if member.value > userValue! {
-                        memberRef.child(member.key).setValue(member.value-1)
+                        lineRef.child("members").child(member.key).setValue(member.value-1)
                     }
                 }
+                self.interactButton.setTitle("Take a spot", for: .normal)
                 
-                memberRef.child(User.current.uid).setValue(nil)
+                lineRef.child("members").child(User.current.uid).setValue(nil)
                 userRef.child(self.managedLine!.name).setValue(nil)
             } else {
                 print("User is not a member, joining line.")
-                userRef.child(self.managedLine!.name).setValue(memberArray.count)
-                memberRef.child(User.current.uid).setValue(memberArray.count)
+                if !bannedArray.contains(User.current.uid) && memberArray.count < maxMembers{
+                    userRef.child(self.managedLine!.name).setValue(memberArray.count)
+                    lineRef.child("members").child(User.current.uid).setValue(memberArray.count)
+                    self.interactButton.setTitle("Leave line", for: .normal)
+                } else if bannedArray.contains(User.current.uid) {
+                    self.createErrorPopUp("You are banned from this line!")
+                } else if memberArray.count >= maxMembers {
+                    self.createErrorPopUp("Line is full!")
+                } else {
+                    self.createErrorPopUp("Could not join line for unknown reason...")
+                }
             }
             Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { (_) in
                 self.refreshButtonPressed(self)

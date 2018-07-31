@@ -10,12 +10,14 @@ import Foundation
 
 class Member {
     
+    var username: String
     let uid: String
     var spot: Int
     
     init(uid: String, spot: Int) {
         self.uid = uid
         self.spot = spot
+        self.username = ""
     }
     
 }

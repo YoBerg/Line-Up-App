@@ -18,9 +18,11 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
             self.membersTableView.reloadData()
         }
     }
+    var selectedMember: Member?
     
     @IBOutlet weak var membersTableView: UITableView!
     @IBOutlet weak var navigationBarFromHome: UINavigationBar!
+    @IBOutlet weak var manageMemberToolBar: UIToolbar!
     
     @IBAction func refreshButtonPressed(_ sender: Any) {
         members = []
@@ -36,6 +38,56 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
         }
     }
     
+    @IBAction func kickMemberButtonPressed(_ sender: Any) {
+        let memberRef = Database.database().reference().child("lines").child(managedLine).child("members")
+        memberRef.observeSingleEvent(of: .value) { (snapshot) in
+            if (snapshot.value as? [String: Int]) != nil {
+                if self.confirmAction("You are kicking '\(self.selectedMember!.username)' from '\(self.managedLine)'! Are you sure this is what you want to do?") {
+                    memberRef.child(self.selectedMember!.uid).setValue(nil)
+                    
+                    for member in self.members {
+                        if member.spot > self.selectedMember!.spot {
+                            memberRef.child(member.uid).setValue(member.spot-1)
+                        }
+                    }
+                    Database.database().reference().child("users").child(self.selectedMember!.uid).child("queuedLines").child(self.managedLine).setValue(nil)
+                }
+            } else {
+                self.createErrorPopUp("Error locating line '\(self.managedLine)' in our database! Was it deleted?")
+            }
+        }
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+            self.refreshButtonPressed(self)
+        }
+    }
+    
+    @IBAction func moveMemberButtonPressed(_ sender: Any) {
+    }
+    
+    @IBAction func banMemberButtonPressed(_ sender: Any) {
+        let lineRef = Database.database().reference().child("lines").child(managedLine)
+        lineRef.observeSingleEvent(of: .value) { (snapshot) in
+            if (snapshot.value as? [String: Any]) != nil {
+                if self.confirmAction("You are banning '\(self.selectedMember!.username)' from '\(self.managedLine)'! Are you sure this is what you want to do?") {
+                    lineRef.child("members").child(self.selectedMember!.uid).setValue(nil)
+                    lineRef.child("bannedMembers").child(self.selectedMember!.uid).setValue(true)
+                    
+                    for member in self.members {
+                        if member.spot > self.selectedMember!.spot {
+                            lineRef.child("members").child(member.uid).setValue(member.spot-1)
+                        }
+                    }
+                    Database.database().reference().child("users").child(self.selectedMember!.uid).child("queuedLines").child(self.managedLine).setValue(nil)
+                }
+            } else {
+                self.createErrorPopUp("Error locating line '\(self.managedLine)' in our database! Was it deleted?")
+            }
+        }
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+            self.refreshButtonPressed(self)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         membersTableView.delegate = self
@@ -43,6 +95,7 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
     }
     override func viewWillAppear(_ animated: Bool) {
         self.navigationBarFromHome.isHidden = hidingNavBarState
+        self.manageMemberToolBar.isHidden = true
         refreshButtonPressed(self)
     }
     
@@ -58,9 +111,15 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
         Database.database().reference().child("users").child(member.uid).child("username").observeSingleEvent(of: .value) { (snapshot) in
             let username = snapshot.value as! String
             cell.memberNameLabel.text = username
+            self.members[indexPath.row].username = username
         }
-        cell.memberSpotLabel.text = String(member.spot)
+        cell.memberSpotLabel.text = String(member.spot + 1)
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        manageMemberToolBar.isHidden = false
+        selectedMember = members[indexPath.row]
     }
 }
