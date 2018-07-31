@@ -168,7 +168,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("you selected row \(indexPath.row)")
         let selectedLine = lines[indexPath.row]
         if selectedLine.creator == User.current.username {
             print("Manage Line \(selectedLine.name)")

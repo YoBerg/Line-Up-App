@@ -63,6 +63,10 @@ class ManageLineViewController: UIViewController {
         if segue.identifier == "unwindWithSegue" {
             let createLineViewController = segue.destination as! CreateLineViewController
             createLineViewController.forceUnwindSegue()
+        } else if segue.identifier == "manageMembers" {
+            let manageMembersViewController = segue.destination as! ManageMembersViewController
+            manageMembersViewController.hidingNavBarState = hidingNavBarState
+            manageMembersViewController.managedLine = managedLine!
         }
     }
     

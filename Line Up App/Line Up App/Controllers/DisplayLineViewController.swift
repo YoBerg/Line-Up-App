@@ -68,9 +68,8 @@ class DisplayLineViewController: UIViewController {
                 userRef.child(self.managedLine!.name).setValue(nil)
             } else {
                 print("User is not a member, joining line.")
-                
+                userRef.child(self.managedLine!.name).setValue(memberArray.count)
                 memberRef.child(User.current.uid).setValue(memberArray.count)
-                userRef.child(self.managedLine!.name).setValue(true)
             }
             Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { (_) in
                 self.refreshButtonPressed(self)

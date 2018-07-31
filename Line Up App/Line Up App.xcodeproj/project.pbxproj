@@ -29,6 +29,9 @@
 		FAB667152107A0620077DB3A /* DisplayLineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB667142107A0620077DB3A /* DisplayLineViewController.swift */; };
 		FAB667172107A0E10077DB3A /* ManageLineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB667162107A0E10077DB3A /* ManageLineViewController.swift */; };
 		FAB667192107AA750077DB3A /* ListLinesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB667182107AA750077DB3A /* ListLinesTableViewCell.swift */; };
+		FAE1115D210FCA1A003FCF04 /* Member.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE1115C210FCA1A003FCF04 /* Member.swift */; };
+		FAEF5ADF210FA23F0020F108 /* ManageMembersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEF5ADE210FA23F0020F108 /* ManageMembersViewController.swift */; };
+		FAEF5AE1210FA2910020F108 /* ListMembersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEF5AE0210FA2910020F108 /* ListMembersTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,6 +60,9 @@
 		FAB667142107A0620077DB3A /* DisplayLineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLineViewController.swift; sourceTree = "<group>"; };
 		FAB667162107A0E10077DB3A /* ManageLineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageLineViewController.swift; sourceTree = "<group>"; };
 		FAB667182107AA750077DB3A /* ListLinesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListLinesTableViewCell.swift; sourceTree = "<group>"; };
+		FAE1115C210FCA1A003FCF04 /* Member.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Member.swift; sourceTree = "<group>"; };
+		FAEF5ADE210FA23F0020F108 /* ManageMembersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageMembersViewController.swift; sourceTree = "<group>"; };
+		FAEF5AE0210FA2910020F108 /* ListMembersTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListMembersTableViewCell.swift; sourceTree = "<group>"; };
 		FBD0E633122681EF023061C7 /* Pods-Line Up App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Line Up App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Line Up App/Pods-Line Up App.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -110,6 +116,7 @@
 		FA2A0C5A210654C900C28559 /* Line Up App */ = {
 			isa = PBXGroup;
 			children = (
+				FAEF5ADD210FA1FA0020F108 /* Login Controllers */,
 				FA50B7152107E53800E7C425 /* Extensions */,
 				FAB6670F21069AD00077DB3A /* Services */,
 				FAB6670E21069ACA0077DB3A /* Models */,
@@ -137,12 +144,12 @@
 			isa = PBXGroup;
 			children = (
 				FA2A0C5D210654C900C28559 /* HomeViewController.swift */,
-				FA50B7132107E41600E7C425 /* createUsernameViewController.swift */,
-				FAB667102107974C0077DB3A /* LoginViewController.swift */,
 				FAB667142107A0620077DB3A /* DisplayLineViewController.swift */,
 				FAB6671221079FB10077DB3A /* CreateLineViewController.swift */,
 				FAB667162107A0E10077DB3A /* ManageLineViewController.swift */,
 				FAB667182107AA750077DB3A /* ListLinesTableViewCell.swift */,
+				FAEF5AE0210FA2910020F108 /* ListMembersTableViewCell.swift */,
+				FAEF5ADE210FA23F0020F108 /* ManageMembersViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -172,6 +179,7 @@
 			children = (
 				FA50B70D2107E28400E7C425 /* User.swift */,
 				FA50B71A2108FD0500E7C425 /* Line.swift */,
+				FAE1115C210FCA1A003FCF04 /* Member.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -182,6 +190,15 @@
 				FA50B7112107E38A00E7C425 /* UserService.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		FAEF5ADD210FA1FA0020F108 /* Login Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				FA50B7132107E41600E7C425 /* createUsernameViewController.swift */,
+				FAB667102107974C0077DB3A /* LoginViewController.swift */,
+			);
+			path = "Login Controllers";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -334,9 +351,12 @@
 				FA50B721210A7B1D00E7C425 /* UIViewControllerExtensions.swift in Sources */,
 				FA50B70E2107E28400E7C425 /* User.swift in Sources */,
 				FAB667172107A0E10077DB3A /* ManageLineViewController.swift in Sources */,
+				FAEF5AE1210FA2910020F108 /* ListMembersTableViewCell.swift in Sources */,
 				FA50B7122107E38A00E7C425 /* UserService.swift in Sources */,
 				FA50B7142107E41600E7C425 /* createUsernameViewController.swift in Sources */,
+				FAE1115D210FCA1A003FCF04 /* Member.swift in Sources */,
 				FAB667152107A0620077DB3A /* DisplayLineViewController.swift in Sources */,
+				FAEF5ADF210FA23F0020F108 /* ManageMembersViewController.swift in Sources */,
 				FA2A0C5C210654C900C28559 /* AppDelegate.swift in Sources */,
 				FA50B7102107E2C900E7C425 /* Constants.swift in Sources */,
 			);

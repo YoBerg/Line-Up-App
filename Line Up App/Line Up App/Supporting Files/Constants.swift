@@ -17,5 +17,6 @@ struct Constants {
     }
     struct TableViewCell {
         static let ListLinesTableViewCell = "ListLinesTableViewCell"
+        static let ListMembersTableViewCell = "ListMembersTableViewCell"
     }
 }

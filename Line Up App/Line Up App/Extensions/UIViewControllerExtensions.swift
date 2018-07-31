@@ -12,6 +12,7 @@ extension UIViewController {
     func createErrorPopUp(_ message: String) {
         print(message)
     }
+    
     func isNsnullOrNil(_ object : Any?) -> Bool {
         if let _: Any = object {
             return true
