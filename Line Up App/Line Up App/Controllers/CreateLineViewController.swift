@@ -24,6 +24,7 @@ class CreateLineViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func createLineButtonPressed(_ sender: Any) {
+        if isInternetAvailable() {
         let currentUser = User.current
         let rootRef = Database.database().reference()
         let lineRef = rootRef.child("lines")
@@ -66,6 +67,9 @@ class CreateLineViewController: UIViewController, UITextFieldDelegate {
                 self.performSegue(withIdentifier: "manageLine", sender: self)
             }
         })
+        } else {
+            let _ = createErrorPopUp("No internet connection!")
+        }
     }
     
     @IBAction func waitTimeMinutesDidChange(_ sender: UITextField!) {

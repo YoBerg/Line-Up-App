@@ -39,6 +39,7 @@ class DisplayLineViewController: UIViewController {
     }
     
     @IBAction func interactButtonPressed(_ sender: Any) {
+        if isInternetAvailable() {
         let lineRef = Database.database().reference().child("lines").child(managedLine!.name)
         let userRef = Database.database().reference().child("users").child(User.current.uid).child("queuedLines")
         
@@ -81,10 +82,18 @@ class DisplayLineViewController: UIViewController {
                 self.refreshButtonPressed(self)
             })
         }
+        } else {
+            let _ = createErrorPopUp("No internet connection!")
+        }
     }
     
     @IBAction func refreshButtonPressed(_ sender: Any) {
-        
+        if isInternetAvailable() {
+            self.interactButton.isEnabled = true
+            self.interactButton.isHidden = false
+            self.waitTimeLabel.isHidden = false
+            self.numberOfMembersLabel.isHidden = false
+            self.spotNumberLabel.isHidden = false
         let lineRef = Database.database().reference().child("lines").child(managedLine!.name)
         lineRef.observe(.value) { (snapshot) in
             
@@ -119,5 +128,15 @@ class DisplayLineViewController: UIViewController {
                 })
             }
         }
+        } else {
+            self.lineNameLabel.text = "No connection."
+            self.creatorNameLabel.text = "Refresh once reconnected."
+            self.interactButton.isEnabled = false
+            self.interactButton.isHidden = true
+            self.waitTimeLabel.isHidden = true
+            self.numberOfMembersLabel.isHidden = true
+            self.spotNumberLabel.isHidden = true
+        }
     }
 }
+

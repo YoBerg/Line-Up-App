@@ -21,6 +21,7 @@ class createUsernameViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func nextButtonTapped(_ sender: UIButton) {
+        if isInternetAvailable() {
         guard let firUser = Auth.auth().currentUser,
             let username = usernameTextField.text,
             !username.isEmpty else { return }
@@ -36,6 +37,9 @@ class createUsernameViewController: UIViewController, UITextFieldDelegate {
             let initialViewController = UIStoryboard.initialViewController(for: .main)
             self.view.window?.rootViewController = initialViewController
             self.view.window?.makeKeyAndVisible()
+        }
+        } else {
+            let _ = createErrorPopUp("No internet connection!")
         }
     }
     

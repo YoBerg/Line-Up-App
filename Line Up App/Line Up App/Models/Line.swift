@@ -16,6 +16,7 @@ class Line {
     var maxMembers: Int
     var creator: String
     var mySpot: Int?
+    var searchIndex: Int
     
     init(name: String, waitTime: Int, members: Array<String>, maxMembers: Int, creator: String) {
         self.name = name
@@ -24,6 +25,7 @@ class Line {
         self.maxMembers = maxMembers
         self.creator = creator
         self.mySpot = nil
+        self.searchIndex = 0
     }
     
 }

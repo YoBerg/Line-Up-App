@@ -16,8 +16,10 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             self.linesTableView.reloadData()
         }
     }
+    var popUpInput: String?
     var lineNameToDeliver: String?
     var lineClassToDeliver: Line?
+    
     @IBOutlet weak var linesTableView: UITableView!
     @IBOutlet weak var searchTextField: ClosableTextField!
     @IBOutlet weak var searchButton: UIButton!
@@ -51,6 +53,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     @IBAction func searchButtonPressed(_ sender: Any) {
+        if isInternetAvailable() {
         searchTextField.resignFirstResponder()
         let rootRef = Database.database().reference()
         if searchTextField.text == "" || searchTextField.text == nil {
@@ -66,20 +69,30 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 self.lines = []
                 for line in linesDict {
                     let lineDict = line.value as! [String: Any]
+                    
+                    //using the Boyer-Moore-Horspool string search algorithm under MIT License
                     let result = line.key.lowercased().index(of: searchText.lowercased())?.encodedOffset
                     if result != nil {
                         let memberDict: [String: Int] = self.isNsnullOrNil(lineDict["members"]) ? lineDict["members"] as! [String: Int] : [:]
                         let memberArray: [String] = memberDict.map{$0.key}
-                        self.lines.append(Line(name: line.key, waitTime: lineDict["waitTime"] as! Int, members: memberArray, maxMembers: lineDict["maxMembers"] as! Int, creator: lineDict["creator"] as! String))
+                        let newLine = Line(name: line.key, waitTime: lineDict["waitTime"] as! Int, members: memberArray, maxMembers: lineDict["maxMembers"] as! Int, creator: lineDict["creator"] as! String)
+                        newLine.searchIndex = result!
+                        self.lines.append(newLine)
+                        if self.lines.count >= 10 { break }
                     }
                 }
+                self.lines = self.lines.sorted(by:{$0.searchIndex < $1.searchIndex})
             } else {
                 let _ = self.createErrorPopUp("Our database appears to be empty!")
             }
         })
+        } else {
+            let _ = createErrorPopUp("No internet connection!")
+        }
     }
     
     @IBAction func findUserHostedLinesButtonPressed(_ sender: Any) {
+        if isInternetAvailable() {
         let currentUser = User.current
         let rootRef = Database.database().reference()
         let linesRef = rootRef.child("lines")
@@ -112,9 +125,13 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
          5: created a dict from the JSON we pulled from the Firebase database.
          6: populated the lines array with the information we have from the dict.
          */
+        } else {
+            let _ = createErrorPopUp("No internet connection!")
+        }
     }
     
     @IBAction func findUserQueuedLinesButtonPressed(_ sender: Any) {
+        if isInternetAvailable() {
         let currentUser = User.current
         let rootRef = Database.database().reference()
         let linesRef = rootRef.child("lines")
@@ -147,6 +164,9 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
          5: created a dict from the JSON we pulled from the Firebase database.
          6: populated the lines array with the information we have from the dict.
          */
+        } else {
+            let _ = createErrorPopUp("No internet connection!")
+        }
     }
     
     override func viewDidLoad() {
@@ -154,6 +174,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         linesTableView.delegate = self
         linesTableView.dataSource = self
         searchTextField.delegate = self
+        
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

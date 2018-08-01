@@ -11,6 +11,7 @@ import FirebaseDatabase
 
 class ManageLineViewController: UIViewController, PopUpViewControllerListener {
     
+    var popUpInput: String?
     var managedLine: String?
     var hidingNavBarState: Bool = true
     
@@ -24,6 +25,7 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
         
     }
     override func viewWillAppear(_ animated: Bool) {
+        if isInternetAvailable() {
         let lineRef = Database.database().reference().child("lines").child(managedLine!)
         lineRef.observeSingleEvent(of: .value) { (snapshot) in
             let lineDict = snapshot.value as! [String : Any]
@@ -33,7 +35,12 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
             let numberOfMembers: Int = lineDictMembers.count
             self.numberOfMembersLabel.text = "\(numberOfMembers) / \(lineDict["maxMembers"] ?? 0)"
         }
-        self.lineNameLabel.text = managedLine!
+            self.lineNameLabel.text = managedLine!
+        } else {
+            lineNameLabel.text = "No connection."
+            numberOfMembersLabel.text = "Refresh once reconnected."
+            waitTimeLabel.isHidden = true
+        }
         self.navigationBarFromHome.isHidden = hidingNavBarState
     }
     
@@ -50,7 +57,11 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
     }
     
     @IBAction func deleteLineButtonPressed(_ sender: Any) {
-        let _ = confirmAction("Delete line \(managedLine!)?", identifier: "delete line", sender: self)
+        if isInternetAvailable() {
+            let _ = confirmAction("Delete line \(managedLine!)?", identifier: "delete line", sender: self)
+        } else {
+            let _ = createErrorPopUp("No internet connection!")
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -65,6 +76,7 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
     }
     
     @IBAction func nextButtonPressed(_ sender: Any) {
+        if isInternetAvailable() {
         let memberRef = Database.database().reference().child("lines").child(managedLine!).child("members")
         memberRef.observeSingleEvent(of: .value) { (snapshot) in
             if let memberDict = snapshot.value as?[String: Int] {
@@ -81,9 +93,14 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
                 let _ = self.createErrorPopUp("No members in line!")
             }
         }
+        } else {
+            let _ = self.createErrorPopUp("No internet connection!")
+        }
     }
     
     @IBAction func refreshButtonPressed(_ sender: Any) {
+        if isInternetAvailable() {
+            waitTimeLabel.isHidden = false
         let lineRef = Database.database().reference().child("lines").child(managedLine!)
         lineRef.observe(.value) { (snapshot) in
             if let lineDict = snapshot.value as? [String : Any] {
@@ -101,9 +118,11 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
                 }
             }
         }
+        }
     }
     
     func popUpResponse(identifier: String) {
+        if isInternetAvailable() {
         if identifier == "delete line" {
             Database.database().reference().child("lines").child(managedLine!).setValue(nil)
             Database.database().reference().child("users").child(User.current.uid).child("hostedLines").child(managedLine!).setValue(nil)
@@ -111,6 +130,9 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
             dismiss(animated: true) {
                 print("returning home...")
             }
+        }
+        } else {
+            let _ = self.createErrorPopUp("No internet connection!")
         }
     }
 }

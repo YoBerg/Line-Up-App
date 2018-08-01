@@ -10,9 +10,12 @@ import UIKit
 import FirebaseDatabase
 
 class ManageMembersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, PopUpViewControllerListener {
+    
+    var popUpInput: String?
+    
     func popUpResponse(identifier: String) {
         if identifier == "kick member" {
-            
+            if isInternetAvailable() {
             let memberRef = Database.database().reference().child("lines").child(managedLine).child("members")
             memberRef.observeSingleEvent(of: .value) { (snapshot) in
                 if (snapshot.value as? [String: Int]) != nil {
@@ -29,8 +32,14 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
             Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
                 self.refreshButtonPressed(self)
             }
+            } else {
+                Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { (_) in
+                    let _ = self.createErrorPopUp("No internet connection!")
+                })
+            }
             manageMemberToolBar.isHidden = true
         } else if identifier == "ban member" {
+            if isInternetAvailable() {
             let lineRef = Database.database().reference().child("lines").child(managedLine)
             lineRef.observeSingleEvent(of: .value) { (snapshot) in
                 if (snapshot.value as? [String: Any]) != nil {
@@ -48,10 +57,37 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
             Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
                 self.refreshButtonPressed(self)
             }
+            } else {
+                Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { (_) in
+                    let _ = self.createErrorPopUp("No internet connection!")
+                })
+            }
             manageMemberToolBar.isHidden = true
+        } else if identifier == "move member" {
+            if isInternetAvailable() {
+                let lineRef = Database.database().reference().child("lines").child(managedLine)
+                lineRef.observeSingleEvent(of: .value) { (snapshot) in
+                    if (snapshot.value as? [String: Any]) != nil {
+                        let newSpot: Int = Int(self.popUpInput!)! > self.members.count ? self.members.count-1 : Int(self.popUpInput!)!-1
+                        lineRef.child("members").child(self.selectedMember!.uid).setValue(newSpot)
+                        Database.database().reference().child("users").child(self.selectedMember!.uid).child("queuedLines").child(self.managedLine).setValue(newSpot)
+                        for member in self.members {
+                            if member.spot > self.selectedMember!.spot && member.spot <= newSpot {
+                                lineRef.child("members").child(member.uid).setValue(member.spot-1)
+                            }
+                        }
+                    }
+                }
+                Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                    self.refreshButtonPressed(self)
+                }
+            } else {
+                Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                    let _ = self.createErrorPopUp("No internet connection!")
+                }
+            }
         }
     }
-    var popUpResponse: Bool = false
     var managedLine: String = ""
     var hidingNavBarState = true
     var members = [Member]() {
@@ -66,6 +102,7 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
     @IBOutlet weak var manageMemberToolBar: UIToolbar!
     
     @IBAction func refreshButtonPressed(_ sender: Any) {
+        if isInternetAvailable() {
         members = []
         Database.database().reference().child("lines").child(managedLine).child("members").observeSingleEvent(of: .value) { (snapshot) in
             if let memberDict = snapshot.value as? [String: Int] {
@@ -75,6 +112,9 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
                 self.members = self.members.sorted(by: { $0.spot < $1.spot })
             }
         }
+        } else {
+            
+        }
         manageMemberToolBar.isHidden = true
     }
     
@@ -83,6 +123,9 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
     }
     
     @IBAction func moveMemberButtonPressed(_ sender: Any) {
+        let popUp = self.getInput("Move \(self.selectedMember!.username) to...", identifier: "move member", sender: self)
+        popUp.inputTextField.keyboardType = UIKeyboardType.numberPad
+        popUp.inputTextField.placeholder = "Select a spot #"
     }
     
     @IBAction func banMemberButtonPressed(_ sender: Any) {
@@ -107,7 +150,7 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.TableViewCell.ListMembersTableViewCell, for: indexPath) as! ListMembersTableViewCell
-        
+        if isInternetAvailable() {
         let member = members[indexPath.row]
         Database.database().reference().child("users").child(member.uid).child("username").observeSingleEvent(of: .value) { (snapshot) in
             let username = snapshot.value as! String
@@ -115,6 +158,9 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
             self.members[indexPath.row].username = username
         }
         cell.memberSpotLabel.text = String(member.spot + 1)
+        } else {
+            let _ = self.createErrorPopUp("No members in line!")
+        }
         
         return cell
     }

@@ -20,7 +20,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h8d-AK-DCa">
-                                <rect key="frame" x="66.5" y="399" width="241" height="128"/>
+                                <rect key="frame" x="66.5" y="299" width="241" height="128"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Message" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sGb-zf-on7">
                                         <rect key="frame" x="8" y="8" width="225" height="80"/>
@@ -49,6 +49,29 @@
                                             <action selector="yesButtonPressed:" destination="hvS-wC-BQs" eventType="touchUpInside" id="GDn-LM-BBD"/>
                                         </connections>
                                     </button>
+                                    <textField hidden="YES" opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="JEX-TE-OlN">
+                                        <rect key="frame" x="57" y="88" width="127" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="127" id="jYO-AU-Tc6"/>
+                                        </constraints>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocorrectionType="no"/>
+                                    </textField>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sM0-zu-eNu">
+                                        <rect key="frame" x="192" y="88" width="41" height="30"/>
+                                        <state key="normal" title="Done"/>
+                                        <connections>
+                                            <action selector="confirmButtonPressed:" destination="hvS-wC-BQs" eventType="touchUpInside" id="kVJ-lK-xfF"/>
+                                        </connections>
+                                    </button>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p53-Db-RRR">
+                                        <rect key="frame" x="8" y="88" width="49" height="30"/>
+                                        <state key="normal" title="Cancel"/>
+                                        <connections>
+                                            <action selector="cancelButtonPressed:" destination="hvS-wC-BQs" eventType="touchUpInside" id="0fR-B3-79n"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.89141814720812185" green="0.89141814720812185" blue="0.89141814720812185" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
@@ -59,27 +82,40 @@
                                     <constraint firstItem="ShE-kZ-Sfc" firstAttribute="top" secondItem="sGb-zf-on7" secondAttribute="bottom" id="JDo-2g-fdh"/>
                                     <constraint firstItem="sGb-zf-on7" firstAttribute="top" secondItem="h8d-AK-DCa" secondAttribute="top" constant="8" id="JrU-Pr-zXY"/>
                                     <constraint firstAttribute="bottom" secondItem="rRs-M7-8vM" secondAttribute="bottom" constant="8" id="KKO-10-w33"/>
+                                    <constraint firstItem="sM0-zu-eNu" firstAttribute="height" secondItem="JEX-TE-OlN" secondAttribute="height" id="Kjb-hR-fFI"/>
                                     <constraint firstAttribute="width" constant="241" id="PP5-TJ-leL"/>
+                                    <constraint firstItem="JEX-TE-OlN" firstAttribute="top" secondItem="sGb-zf-on7" secondAttribute="bottom" id="PYy-mQ-j87"/>
                                     <constraint firstAttribute="trailing" secondItem="sGb-zf-on7" secondAttribute="trailing" constant="8" id="V3t-Wl-XMt"/>
+                                    <constraint firstItem="p53-Db-RRR" firstAttribute="leading" secondItem="h8d-AK-DCa" secondAttribute="leading" constant="8" id="a50-fF-gxQ"/>
+                                    <constraint firstItem="sM0-zu-eNu" firstAttribute="centerY" secondItem="JEX-TE-OlN" secondAttribute="centerY" id="bFZ-P8-NSX"/>
                                     <constraint firstAttribute="trailing" secondItem="ifE-oY-omd" secondAttribute="trailing" constant="16" id="bwv-dj-PuF"/>
+                                    <constraint firstItem="sM0-zu-eNu" firstAttribute="leading" secondItem="JEX-TE-OlN" secondAttribute="trailing" constant="8" id="h24-Ru-tvl"/>
                                     <constraint firstItem="ifE-oY-omd" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="rRs-M7-8vM" secondAttribute="trailing" constant="8" id="h9p-q9-KPi"/>
                                     <constraint firstItem="ShE-kZ-Sfc" firstAttribute="leading" secondItem="h8d-AK-DCa" secondAttribute="leading" constant="16" id="hY2-2u-21h"/>
+                                    <constraint firstItem="p53-Db-RRR" firstAttribute="centerY" secondItem="JEX-TE-OlN" secondAttribute="centerY" id="iYV-Fw-7Db"/>
+                                    <constraint firstAttribute="trailing" secondItem="sM0-zu-eNu" secondAttribute="trailing" constant="8" id="jRD-sN-BEd"/>
                                     <constraint firstAttribute="height" constant="128" id="juN-qa-zuy"/>
                                     <constraint firstItem="rRs-M7-8vM" firstAttribute="leading" secondItem="h8d-AK-DCa" secondAttribute="leading" constant="100" id="kdo-TD-jgr"/>
+                                    <constraint firstItem="JEX-TE-OlN" firstAttribute="leading" secondItem="p53-Db-RRR" secondAttribute="trailing" id="qJG-YB-dWR"/>
+                                    <constraint firstItem="JEX-TE-OlN" firstAttribute="centerX" secondItem="h8d-AK-DCa" secondAttribute="centerX" id="tTC-fs-4Vq"/>
                                     <constraint firstItem="rRs-M7-8vM" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ShE-kZ-Sfc" secondAttribute="trailing" constant="8" id="tYp-uB-LI1"/>
                                     <constraint firstAttribute="trailing" secondItem="rRs-M7-8vM" secondAttribute="trailing" constant="100" id="uTE-vO-uyu"/>
+                                    <constraint firstItem="p53-Db-RRR" firstAttribute="height" secondItem="JEX-TE-OlN" secondAttribute="height" id="vh1-4N-gGZ"/>
                                 </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="0.70536564086294418" green="0.70536564086294418" blue="0.70536564086294418" alpha="0.20483732876712329" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="7bC-ZZ-3zh" firstAttribute="bottom" secondItem="h8d-AK-DCa" secondAttribute="bottom" constant="140" id="61b-yw-NK0"/>
+                            <constraint firstItem="7bC-ZZ-3zh" firstAttribute="bottom" secondItem="h8d-AK-DCa" secondAttribute="bottom" constant="240" id="61b-yw-NK0"/>
                             <constraint firstItem="h8d-AK-DCa" firstAttribute="centerX" secondItem="7bC-ZZ-3zh" secondAttribute="centerX" id="nvF-is-rdM"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="7bC-ZZ-3zh"/>
                     </view>
                     <connections>
                         <outlet property="doneButton" destination="rRs-M7-8vM" id="F4X-eu-eA6"/>
+                        <outlet property="inputCancelButton" destination="p53-Db-RRR" id="PlD-IK-8WW"/>
+                        <outlet property="inputConfirmButton" destination="sM0-zu-eNu" id="pnf-jp-khV"/>
+                        <outlet property="inputTextField" destination="JEX-TE-OlN" id="ZPd-5h-YP3"/>
                         <outlet property="messageLabel" destination="sGb-zf-on7" id="7ir-FB-gVp"/>
                         <outlet property="noButton" destination="ifE-oY-omd" id="hVO-Sf-TxD"/>
                         <outlet property="popUpView" destination="h8d-AK-DCa" id="o7C-gG-fwr"/>
@@ -109,7 +145,7 @@
         <!--Home-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="HomeViewController" customModule="Line_Up_App" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="home" id="BYZ-38-t0r" customClass="HomeViewController" customModule="Line_Up_App" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

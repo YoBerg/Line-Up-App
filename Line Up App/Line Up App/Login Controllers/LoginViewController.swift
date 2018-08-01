@@ -22,6 +22,7 @@ class LoginViewController: UIViewController {
     }
     
     @IBAction func loginButtonTapped(_ sender: UIButton) {
+        if isInternetAvailable() {
         // 1
         guard let authUI = FUIAuth.defaultAuthUI()
             else { return }
@@ -32,13 +33,20 @@ class LoginViewController: UIViewController {
         // 3
         let authViewController = authUI.authViewController()
         present(authViewController, animated: true)
+        } else {
+            let _ = createErrorPopUp("No internet connection!")
+        }
     }
 }
 
 extension LoginViewController: FUIAuthDelegate {
     func authUI(_ authUI: FUIAuth, didSignInWith authDataResult: AuthDataResult?, error: Error?) {
         if let error = error {
-            assertionFailure("Error signing in: \(error.localizedDescription)")
+            if isInternetAvailable() {
+                assertionFailure("Error signing in: \(error.localizedDescription)")
+            } else {
+                let _ = createErrorPopUp("No internet connection!")
+            }
             return
         }
         
