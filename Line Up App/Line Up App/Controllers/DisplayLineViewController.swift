@@ -18,6 +18,7 @@ class DisplayLineViewController: UIViewController {
     @IBOutlet weak var numberOfMembersLabel: UILabel!
     @IBOutlet weak var waitTimeLabel: UILabel!
     @IBOutlet weak var interactButton: UIButton!
+    @IBOutlet weak var spotNumberLabel: UILabel!
     
     @IBAction func homeButtonPressed(_ sender: Any) {
         dismiss(animated: true) {
@@ -34,15 +35,7 @@ class DisplayLineViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        lineNameLabel.text = managedLine!.name
-        creatorNameLabel.text = managedLine!.creator
-        waitTimeLabel.text = String(managedLine!.waitTime * managedLine!.members.count)
-        numberOfMembersLabel.text = "\(managedLine!.members.count) / \(managedLine!.maxMembers)"
-        if managedLine!.members.contains(User.current.uid) {
-            interactButton.setTitle("Leave line", for: .normal)
-        } else {
-            interactButton.setTitle("Take a spot", for: .normal)
-        }
+        refreshButtonPressed(self)
     }
     
     @IBAction func interactButtonPressed(_ sender: Any) {
@@ -77,11 +70,11 @@ class DisplayLineViewController: UIViewController {
                     lineRef.child("members").child(User.current.uid).setValue(memberArray.count)
                     self.interactButton.setTitle("Leave line", for: .normal)
                 } else if bannedArray.contains(User.current.uid) {
-                    self.createErrorPopUp("You are banned from this line!")
+                    let _ = self.createErrorPopUp("You are banned from this line!")
                 } else if memberArray.count >= maxMembers {
-                    self.createErrorPopUp("Line is full!")
+                    let _ = self.createErrorPopUp("Line is full!")
                 } else {
-                    self.createErrorPopUp("Could not join line for unknown reason...")
+                    let _ = self.createErrorPopUp("Could not join line for unknown reason...")
                 }
             }
             Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { (_) in
@@ -105,23 +98,26 @@ class DisplayLineViewController: UIViewController {
                 self.managedLine!.maxMembers = lineDict["maxMembers"] as! Int
                 self.managedLine!.waitTime = lineDict["waitTime"] as! Int
                 self.managedLine!.members = memberArray
+                //refreshing labels
+        
+                self.lineNameLabel.text = self.managedLine!.name
+                self.creatorNameLabel.text = self.managedLine!.creator
+                self.waitTimeLabel.text = String(self.managedLine!.waitTime * memberDict.count)
+                self.numberOfMembersLabel.text = "\(self.managedLine!.members.count) / \(self.managedLine!.maxMembers)"
+                if self.managedLine!.members.contains(User.current.uid) {
+                    self.interactButton.setTitle("Leave line", for: .normal)
+                    self.spotNumberLabel.isHidden = false
+                } else {
+                    self.interactButton.setTitle("Take a spot", for: .normal)
+                    self.spotNumberLabel.isHidden = true
+                }
+                self.spotNumberLabel.text = "Spot #\(memberDict.count)"
             } else {
-                self.createErrorPopUp("Line no longer exists!")
+                let _ = self.createErrorPopUp("Line no longer exists!")
                 self.dismiss(animated: true, completion: {
                     print("returning home...")
                 })
             }
-        }
-        //refreshing labels
-        
-        lineNameLabel.text = managedLine!.name
-        creatorNameLabel.text = managedLine!.creator
-        waitTimeLabel.text = String(managedLine!.waitTime * managedLine!.members.count)
-        numberOfMembersLabel.text = "\(managedLine!.members.count) / \(managedLine!.maxMembers)"
-        if managedLine!.members.contains(User.current.uid) {
-            interactButton.setTitle("Leave line", for: .normal)
-        } else {
-            interactButton.setTitle("Take a spot", for: .normal)
         }
     }
 }

@@ -9,8 +9,8 @@
 import UIKit
 import FirebaseDatabase
 
-class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate {
-
+class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, PopUpViewControllerListener {
+    
     var lines = [Line]() {
         didSet {
             self.linesTableView.reloadData()
@@ -18,48 +18,63 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     var lineNameToDeliver: String?
     var lineClassToDeliver: Line?
-    
     @IBOutlet weak var linesTableView: UITableView!
     @IBOutlet weak var searchTextField: ClosableTextField!
     @IBOutlet weak var searchButton: UIButton!
-    
+
     @IBAction func signOutButtonTapped(_ sender: UIBarButtonItem) {
-        
-        //Clear UserDefault
-        let domain = Bundle.main.bundleIdentifier!
-        UserDefaults.standard.removePersistentDomain(forName: domain)
-        UserDefaults.standard.synchronize()
-        
-        //Segue back to Login storyboard
-        let initialViewController = UIStoryboard.initialViewController(for: .login)
-        self.view.window?.rootViewController = initialViewController
-        self.view.window?.makeKeyAndVisible()
+        let _ = confirmAction("Are you sure you want to sign out?", identifier: "sign out", sender: self)
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let currentString: NSString = textField.text! as NSString
+        let newString: NSString =
+            currentString.replacingCharacters(in: range, with: string) as NSString
+        if textField == searchTextField {
+            return newString.length <= 20
+        }
+        return true
+    }
+    
+    func popUpResponse(identifier: String) {
+        if identifier == "sign out" {
+            //Clear UserDefault
+            let domain = Bundle.main.bundleIdentifier!
+            UserDefaults.standard.removePersistentDomain(forName: domain)
+            UserDefaults.standard.synchronize()
+            
+            //Segue back to Login storyboard
+            let initialViewController = UIStoryboard.initialViewController(for: .login)
+            self.view.window?.rootViewController = initialViewController
+            self.view.window?.makeKeyAndVisible()
+        }
     }
     
     @IBAction func searchButtonPressed(_ sender: Any) {
         searchTextField.resignFirstResponder()
         let rootRef = Database.database().reference()
         if searchTextField.text == "" || searchTextField.text == nil {
-            createErrorPopUp("Your query is empty!")
+            let _ = createErrorPopUp("Your query is empty!")
             return
         }
         let searchText: String = searchTextField.text!
-        let lineRef = rootRef.child("lines").child(searchText)
+        let lineRef = rootRef.child("lines")
         
         //obtaining JSON contents of lineRef
         lineRef.observeSingleEvent(of: .value, with: { (snapshot) in
-            if let lineDict = snapshot.value as? [String : Any] {
-                print(lineDict.debugDescription)
-                
-                //using a Ternary Operator to return value of members if it isn't nil and [] if it is.
-                let members = lineDict["members"] as? [String: Int]
-                let membersArray: [String] = members != nil ? Array(members!.keys) : []
-                
+            if let linesDict = snapshot.value as? [String : Any] {
                 self.lines = []
-                self.lines.append(Line(name: lineRef.key, waitTime: lineDict["waitTime"] as! Int, members: membersArray, maxMembers: lineDict["maxMembers"] as! Int, creator: lineDict["creator"] as! String))
+                for line in linesDict {
+                    let lineDict = line.value as! [String: Any]
+                    let result = line.key.lowercased().index(of: searchText.lowercased())?.encodedOffset
+                    if result != nil {
+                        let memberDict: [String: Int] = self.isNsnullOrNil(lineDict["members"]) ? lineDict["members"] as! [String: Int] : [:]
+                        let memberArray: [String] = memberDict.map{$0.key}
+                        self.lines.append(Line(name: line.key, waitTime: lineDict["waitTime"] as! Int, members: memberArray, maxMembers: lineDict["maxMembers"] as! Int, creator: lineDict["creator"] as! String))
+                    }
+                }
             } else {
-                self.createErrorPopUp("Did not find '\(searchText)' in our databases!")
-                return
+                let _ = self.createErrorPopUp("Our database appears to be empty!")
             }
         })
     }
@@ -139,10 +154,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         linesTableView.delegate = self
         linesTableView.dataSource = self
         searchTextField.delegate = self
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        lines = []
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

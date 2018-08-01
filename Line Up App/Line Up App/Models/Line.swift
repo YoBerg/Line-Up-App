@@ -14,7 +14,7 @@ class Line {
     var waitTime: Int
     var members: Array<String>
     var maxMembers: Int
-    let creator: String
+    var creator: String
     var mySpot: Int?
     
     init(name: String, waitTime: Int, members: Array<String>, maxMembers: Int, creator: String) {

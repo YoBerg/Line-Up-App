@@ -9,7 +9,7 @@
 import UIKit
 import FirebaseDatabase
 
-class ManageLineViewController: UIViewController {
+class ManageLineViewController: UIViewController, PopUpViewControllerListener {
     
     var managedLine: String?
     var hidingNavBarState: Bool = true
@@ -50,13 +50,7 @@ class ManageLineViewController: UIViewController {
     }
     
     @IBAction func deleteLineButtonPressed(_ sender: Any) {
-        createErrorPopUp("Deleting line \(managedLine!)")
-        Database.database().reference().child("lines").child(managedLine!).setValue(nil)
-        Database.database().reference().child("users").child(User.current.uid).child("hostedLines").child(managedLine!).setValue(nil)
-        self.performSegue(withIdentifier: "unwindWithSegue", sender: self)
-        dismiss(animated: true) {
-            print("returning home...")
-        }
+        let _ = confirmAction("Delete line \(managedLine!)?", identifier: "delete line", sender: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -67,6 +61,25 @@ class ManageLineViewController: UIViewController {
             let manageMembersViewController = segue.destination as! ManageMembersViewController
             manageMembersViewController.hidingNavBarState = hidingNavBarState
             manageMembersViewController.managedLine = managedLine!
+        }
+    }
+    
+    @IBAction func nextButtonPressed(_ sender: Any) {
+        let memberRef = Database.database().reference().child("lines").child(managedLine!).child("members")
+        memberRef.observeSingleEvent(of: .value) { (snapshot) in
+            if let memberDict = snapshot.value as?[String: Int] {
+                for member in memberDict {
+                    if member.value == 0 {
+                        memberRef.child(member.key).setValue(nil)
+                        Database.database().reference().child("users").child(member.key).child("queuedLines").child(self.managedLine!).setValue(nil)
+                    } else {
+                        memberRef.child(member.key).setValue(member.value - 1)
+                        Database.database().reference().child("users").child(member.key).child("queuedLines").child(self.managedLine!).setValue(member.value - 1)
+                    }
+                }
+            } else {
+                let _ = self.createErrorPopUp("No members in line!")
+            }
         }
     }
     
@@ -81,11 +94,22 @@ class ManageLineViewController: UIViewController {
                 self.numberOfMembersLabel.text = "\(members.count) / \(maxMembers)"
                 self.waitTimeLabel.text = String(waitTime * members.count)
             } else {
-                self.createErrorPopUp("Line no longer exists!")
+                let _ = self.createErrorPopUp("Line no longer exists!")
                 self.performSegue(withIdentifier: "unwindWithSegue", sender: self)
                 self.dismiss(animated: true) {
                     print("returning home...")
                 }
+            }
+        }
+    }
+    
+    func popUpResponse(identifier: String) {
+        if identifier == "delete line" {
+            Database.database().reference().child("lines").child(managedLine!).setValue(nil)
+            Database.database().reference().child("users").child(User.current.uid).child("hostedLines").child(managedLine!).setValue(nil)
+            self.performSegue(withIdentifier: "unwindWithSegue", sender: self)
+            dismiss(animated: true) {
+                print("returning home...")
             }
         }
     }

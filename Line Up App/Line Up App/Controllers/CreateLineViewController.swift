@@ -32,29 +32,33 @@ class CreateLineViewController: UIViewController, UITextFieldDelegate {
             nameTextField.text = nameTextField.placeholder
         }
         let lineName: String = nameTextField.text!
+        if lineName.contains(".") || lineName.contains("#") || lineName.contains("$") || lineName.contains("[") || lineName.contains("]") || lineName.contains("/") || lineName.contains("\\") {
+            let _ = createErrorPopUp("Line name cannot contain the character(s) '.' '#' '$' '/' '\\' '[' or ']'.")
+            return
+        }
         guard let maxMembers: Int = Int(maxMembersTextField.text!) else {
-            createErrorPopUp("Please specify the amount of total members your line can have.")
+            let _ = createErrorPopUp("Please specify the amount of total members your line can have.")
             return
         }
         if maxMembers == 0 {
-            createErrorPopUp("You must allow more than 0 members in your line!")
+            let _ = createErrorPopUp("You must allow more than 0 members in your line!")
             return
         }
         guard let waitTimeHours: Int = Int(waitTimeTextFieldHours.text!) else {
-            createErrorPopUp("Please specify the amount of hours the average wait would take.")
+            let _ = createErrorPopUp("Please specify the amount of hours the average wait would take.")
             return
         }
         guard let waitTimeMinutes: Int = Int(waitTimeTextFieldMinutes.text!) else {
-            createErrorPopUp("Please specify the amount of minutes the average wait would take.")
+            let _ = createErrorPopUp("Please specify the amount of minutes the average wait would take.")
             return
         }
         guard let waitTimeSeconds: Int = Int(waitTimeTextFieldSeconds.text!) else {
-            createErrorPopUp("Please specify the amount of seconds the average wait would take.")
+            let _ = createErrorPopUp("Please specify the amount of seconds the average wait would take.")
             return
         }
         lineRef.child(lineName).observeSingleEvent(of: .value, with: { (snapshot) in
             if let _ = snapshot.value as? [String : Any] {
-                self.createErrorPopUp("line named \(lineName) already exists!")
+                let _ = self.createErrorPopUp("line named \(lineName) already exists!")
                 return
             } else {
                 lineRef.child(lineName).setValue(["creator": currentUser.username, "maxMembers": maxMembers, "waitTime": waitTimeHours*3600+waitTimeMinutes*60+waitTimeSeconds])

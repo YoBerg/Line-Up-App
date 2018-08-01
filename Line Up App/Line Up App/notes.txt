@@ -4,6 +4,12 @@ More understandable UI
 
 make bottom home buttons more recognizable
 
-Better search algorithm
-
 More apparent search bar
+
+Move members in manage members
+
+Change line settings (wait time, max members, transfer ownership)
+
+Notifications
+
+Check network connection

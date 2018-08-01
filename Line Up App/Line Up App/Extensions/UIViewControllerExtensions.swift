@@ -9,14 +9,6 @@
 import UIKit
 
 extension UIViewController {
-    func createErrorPopUp(_ message: String) {
-        print(message)
-    }
-    
-    func confirmAction(_ message: String) -> Bool {
-        print(message)
-        return true
-    }
     
     func isNsnullOrNil(_ object : Any?) -> Bool {
         if let _: Any = object {

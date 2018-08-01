@@ -9,8 +9,49 @@
 import UIKit
 import FirebaseDatabase
 
-class ManageMembersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-    
+class ManageMembersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, PopUpViewControllerListener {
+    func popUpResponse(identifier: String) {
+        if identifier == "kick member" {
+            
+            let memberRef = Database.database().reference().child("lines").child(managedLine).child("members")
+            memberRef.observeSingleEvent(of: .value) { (snapshot) in
+                if (snapshot.value as? [String: Int]) != nil {
+                        memberRef.child(self.selectedMember!.uid).setValue(nil)
+                        
+                        for member in self.members {
+                            if member.spot > self.selectedMember!.spot {
+                                memberRef.child(member.uid).setValue(member.spot-1)
+                            }
+                        }
+                        Database.database().reference().child("users").child(self.selectedMember!.uid).child("queuedLines").child(self.managedLine).setValue(nil)
+                }
+            }
+            Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                self.refreshButtonPressed(self)
+            }
+            manageMemberToolBar.isHidden = true
+        } else if identifier == "ban member" {
+            let lineRef = Database.database().reference().child("lines").child(managedLine)
+            lineRef.observeSingleEvent(of: .value) { (snapshot) in
+                if (snapshot.value as? [String: Any]) != nil {
+                    lineRef.child("members").child(self.selectedMember!.uid).setValue(nil)
+                    lineRef.child("bannedMembers").child(self.selectedMember!.uid).setValue(true)
+                    
+                    for member in self.members {
+                        if member.spot > self.selectedMember!.spot {
+                            lineRef.child("members").child(member.uid).setValue(member.spot-1)
+                        }
+                    }
+                    Database.database().reference().child("users").child(self.selectedMember!.uid).child("queuedLines").child(self.managedLine).setValue(nil)
+                }
+            }
+            Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                self.refreshButtonPressed(self)
+            }
+            manageMemberToolBar.isHidden = true
+        }
+    }
+    var popUpResponse: Bool = false
     var managedLine: String = ""
     var hidingNavBarState = true
     var members = [Member]() {
@@ -32,60 +73,20 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
                     self.members.append(Member(uid: member.key, spot: member.value))
                 }
                 self.members = self.members.sorted(by: { $0.spot < $1.spot })
-            } else {
-                self.createErrorPopUp("Could not find line '\(self.managedLine)' in our database!")
             }
         }
+        manageMemberToolBar.isHidden = true
     }
     
     @IBAction func kickMemberButtonPressed(_ sender: Any) {
-        let memberRef = Database.database().reference().child("lines").child(managedLine).child("members")
-        memberRef.observeSingleEvent(of: .value) { (snapshot) in
-            if (snapshot.value as? [String: Int]) != nil {
-                if self.confirmAction("You are kicking '\(self.selectedMember!.username)' from '\(self.managedLine)'! Are you sure this is what you want to do?") {
-                    memberRef.child(self.selectedMember!.uid).setValue(nil)
-                    
-                    for member in self.members {
-                        if member.spot > self.selectedMember!.spot {
-                            memberRef.child(member.uid).setValue(member.spot-1)
-                        }
-                    }
-                    Database.database().reference().child("users").child(self.selectedMember!.uid).child("queuedLines").child(self.managedLine).setValue(nil)
-                }
-            } else {
-                self.createErrorPopUp("Error locating line '\(self.managedLine)' in our database! Was it deleted?")
-            }
-        }
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
-            self.refreshButtonPressed(self)
-        }
+        let _ = self.confirmAction("Confirm kicking '\(self.selectedMember!.username)' from '\(self.managedLine)'.", identifier: "kick member", sender: self)
     }
     
     @IBAction func moveMemberButtonPressed(_ sender: Any) {
     }
     
     @IBAction func banMemberButtonPressed(_ sender: Any) {
-        let lineRef = Database.database().reference().child("lines").child(managedLine)
-        lineRef.observeSingleEvent(of: .value) { (snapshot) in
-            if (snapshot.value as? [String: Any]) != nil {
-                if self.confirmAction("You are banning '\(self.selectedMember!.username)' from '\(self.managedLine)'! Are you sure this is what you want to do?") {
-                    lineRef.child("members").child(self.selectedMember!.uid).setValue(nil)
-                    lineRef.child("bannedMembers").child(self.selectedMember!.uid).setValue(true)
-                    
-                    for member in self.members {
-                        if member.spot > self.selectedMember!.spot {
-                            lineRef.child("members").child(member.uid).setValue(member.spot-1)
-                        }
-                    }
-                    Database.database().reference().child("users").child(self.selectedMember!.uid).child("queuedLines").child(self.managedLine).setValue(nil)
-                }
-            } else {
-                self.createErrorPopUp("Error locating line '\(self.managedLine)' in our database! Was it deleted?")
-            }
-        }
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
-            self.refreshButtonPressed(self)
-        }
+        let _ = self.confirmAction("Confirm banning '\(self.selectedMember!.username)' from '\(self.managedLine)'.", identifier: "ban member", sender: self)
     }
     
     override func viewDidLoad() {
