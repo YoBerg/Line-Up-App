@@ -189,7 +189,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let line = lines[indexPath.row]
         cell.LineNameLabel.text = line.name
         cell.LineCreatorLabel.text = "by " + line.creator
-        cell.WaitTimeLabel.text = String(line.waitTime*line.members.count)+"s"
+        cell.WaitTimeLabel.text = secondsToTime(line.waitTime*line.members.count)
         return cell
     }
     

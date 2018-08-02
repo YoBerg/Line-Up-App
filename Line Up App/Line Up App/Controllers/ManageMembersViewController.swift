@@ -66,6 +66,7 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
         } else if identifier == "move member" {
             if isInternetAvailable() {
                 let lineRef = Database.database().reference().child("lines").child(managedLine)
+                let userRef = Database.database().reference().child("users")
                 lineRef.observeSingleEvent(of: .value) { (snapshot) in
                     if (snapshot.value as? [String: Any]) != nil {
                         let newSpot: Int = Int(self.popUpInput!)! > self.members.count ? self.members.count-1 : Int(self.popUpInput!)!-1
@@ -74,6 +75,10 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
                         for member in self.members {
                             if member.spot > self.selectedMember!.spot && member.spot <= newSpot {
                                 lineRef.child("members").child(member.uid).setValue(member.spot-1)
+                                userRef.child(member.uid).child("queuedLines").child(self.managedLine).setValue(member.spot-1)
+                            } else if member.spot >= newSpot && member.spot < self.selectedMember!.spot {
+                                lineRef.child("members").child(member.uid).setValue(member.spot+1)
+                                userRef.child(member.uid).child("queuedLines").child(self.managedLine).setValue(member.spot+1)
                             }
                         }
                     }

@@ -2,10 +2,12 @@ Favorite lines
 
 make bottom home buttons more recognizable
 
+Allow input for changing line wait time to something more comfortable than seconds
+
+Test cellular connection confirmation
+
 More understandable UI
 
 More apparent search bar
 
 Notifications
-
-Change line settings (wait time, max members, transfer ownership)

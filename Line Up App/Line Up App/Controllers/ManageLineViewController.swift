@@ -19,6 +19,58 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
     @IBOutlet weak var numberOfMembersLabel: UILabel!
     @IBOutlet weak var waitTimeLabel: UILabel!
     @IBOutlet weak var navigationBarFromHome: UINavigationBar!
+    @IBOutlet weak var nextButton: UIButton!
+    
+    @IBOutlet weak var editLineView: UIView!
+    @IBOutlet weak var changeMaxMembersTextField: UITextField!
+    @IBOutlet weak var changeMaxMembersButton: UIButton!
+    @IBOutlet weak var changeWaitTimeTextField: UITextField!
+    @IBOutlet weak var changeWaitTimeButton: UIButton!
+    @IBOutlet weak var changeOwnerTextField: UITextField!
+    @IBOutlet weak var changeOwnerButton: UIButton!
+    @IBOutlet weak var exitEditLineViewButton: UIButton!
+    
+    @IBAction func changeMaxMembersButtonPressed(_ sender: Any) {
+        let _ = confirmAction("About to change maximum members. Confirm? (Existing members will not be kicked.)", identifier: "change max members", sender: self)
+    }
+    
+    @IBAction func changeWaitTimeButtonPressed(_ sender: Any) {
+        let _ = confirmAction("About to change wait time. Confirm?", identifier: "change wait time", sender: self)
+    }
+    
+    @IBAction func changeOwnerButtonPressed(_ sender: Any) {
+        let _ = confirmAction("About to change owner of this line. Confirm? (This action cannot be undone.)", identifier: "change owner", sender: self)
+    }
+    
+    @IBAction func exitEditLineViewButton(_ sender: Any) {
+        editLineView.isHidden = true
+        changeMaxMembersTextField.isHidden = true
+        changeMaxMembersButton.isHidden = true
+        changeWaitTimeTextField.isHidden = true
+        changeWaitTimeButton.isHidden = true
+        changeOwnerTextField.isHidden = true
+        changeOwnerButton.isHidden = true
+        exitEditLineViewButton.isHidden = true
+        changeMaxMembersTextField.isEnabled = false
+        changeMaxMembersButton.isEnabled = false
+        changeWaitTimeTextField.isEnabled = false
+        changeWaitTimeButton.isEnabled = false
+        changeOwnerTextField.isEnabled = false
+        changeOwnerButton.isEnabled = false
+        exitEditLineViewButton.isEnabled = false
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let currentString: NSString = textField.text! as NSString
+        let newString: NSString =
+            currentString.replacingCharacters(in: range, with: string) as NSString
+        if textField == changeMaxMembersTextField {
+            return newString.length <= 8
+        } else if textField == changeWaitTimeTextField {
+            return newString.length <= 2
+        }
+        return true
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,7 +81,7 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
         let lineRef = Database.database().reference().child("lines").child(managedLine!)
         lineRef.observeSingleEvent(of: .value) { (snapshot) in
             let lineDict = snapshot.value as! [String : Any]
-            self.waitTimeLabel.text = String(lineDict["waitTime"] as! Int)
+            self.waitTimeLabel.text = self.secondsToTime(lineDict["waitTime"] as! Int)
             let members = lineDict["members"] as? [String: Int]
             let lineDictMembers = members != nil || members?.count == 0 ? Array(members!.keys) : []
             let numberOfMembers: Int = lineDictMembers.count
@@ -56,6 +108,24 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
         self.performSegue(withIdentifier: "unwindWithSegue", sender: self)
     }
     
+    @IBAction func editLineButtonPressed(_ sender: Any) {
+        editLineView.isHidden = false
+        changeMaxMembersTextField.isHidden = false
+        changeMaxMembersButton.isHidden = false
+        changeWaitTimeTextField.isHidden = false
+        changeWaitTimeButton.isHidden = false
+        changeOwnerTextField.isHidden = false
+        changeOwnerButton.isHidden = false
+        exitEditLineViewButton.isHidden = false
+        changeMaxMembersTextField.isEnabled = true
+        changeMaxMembersButton.isEnabled = true
+        changeWaitTimeTextField.isEnabled = true
+        changeWaitTimeButton.isEnabled = true
+        changeOwnerTextField.isEnabled = true
+        changeOwnerButton.isEnabled = true
+        exitEditLineViewButton.isEnabled = true
+    }
+    
     @IBAction func deleteLineButtonPressed(_ sender: Any) {
         if isInternetAvailable() {
             let _ = confirmAction("Delete line \(managedLine!)?", identifier: "delete line", sender: self)
@@ -76,23 +146,30 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
     }
     
     @IBAction func nextButtonPressed(_ sender: Any) {
-        if isInternetAvailable() {
-        let memberRef = Database.database().reference().child("lines").child(managedLine!).child("members")
-        memberRef.observeSingleEvent(of: .value) { (snapshot) in
-            if let memberDict = snapshot.value as?[String: Int] {
-                for member in memberDict {
-                    if member.value == 0 {
-                        memberRef.child(member.key).setValue(nil)
-                        Database.database().reference().child("users").child(member.key).child("queuedLines").child(self.managedLine!).setValue(nil)
-                    } else {
-                        memberRef.child(member.key).setValue(member.value - 1)
-                        Database.database().reference().child("users").child(member.key).child("queuedLines").child(self.managedLine!).setValue(member.value - 1)
-                    }
-                }
-            } else {
-                let _ = self.createErrorPopUp("No members in line!")
-            }
+        nextButton.isEnabled = false
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+            self.nextButton.isEnabled = true
         }
+        if isInternetAvailable() {
+            let memberRef = Database.database().reference().child("lines").child(managedLine!).child("members")
+            memberRef.observeSingleEvent(of: .value) { (snapshot) in
+                if let memberDict = snapshot.value as?[String: Int] {
+                    for member in memberDict {
+                        if member.value == 0 {
+                            memberRef.child(member.key).setValue(nil)
+                            Database.database().reference().child("users").child(member.key).child("queuedLines").child(self.managedLine!).setValue(nil)
+                        } else {
+                            memberRef.child(member.key).setValue(member.value - 1)
+                            Database.database().reference().child("users").child(member.key).child("queuedLines").child(self.managedLine!).setValue(member.value - 1)
+                        }
+                    }
+                } else {
+                    Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { (_) in
+                        let _ = self.createErrorPopUp("No members in line!")
+                    })
+                }
+            }
+            refreshButtonPressed(self)
         } else {
             let _ = self.createErrorPopUp("No internet connection!")
         }
@@ -109,7 +186,7 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
                 let waitTime = lineDict["waitTime"] as! Int
                 let maxMembers = lineDict["maxMembers"] as! Int
                 self.numberOfMembersLabel.text = "\(members.count) / \(maxMembers)"
-                self.waitTimeLabel.text = String(waitTime * members.count)
+                self.waitTimeLabel.text = self.secondsToTime(waitTime)
             } else {
                 let _ = self.createErrorPopUp("Line no longer exists!")
                 self.performSegue(withIdentifier: "unwindWithSegue", sender: self)
@@ -123,16 +200,57 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
     
     func popUpResponse(identifier: String) {
         if isInternetAvailable() {
-        if identifier == "delete line" {
-            Database.database().reference().child("lines").child(managedLine!).setValue(nil)
-            Database.database().reference().child("users").child(User.current.uid).child("hostedLines").child(managedLine!).setValue(nil)
-            self.performSegue(withIdentifier: "unwindWithSegue", sender: self)
-            dismiss(animated: true) {
-                print("returning home...")
+            if identifier == "delete line" {
+                Database.database().reference().child("lines").child(managedLine!).setValue(nil)
+                Database.database().reference().child("users").child(User.current.uid).child("hostedLines").child(managedLine!).setValue(nil)
+                self.performSegue(withIdentifier: "unwindWithSegue", sender: self)
+                dismiss(animated: true) {
+                    print("returning home...")
+                }
             }
-        }
+            else if identifier == "change max members" {
+                let lineRef = Database.database().reference().child("lines").child(managedLine!)
+                if let newMaxMembers = Int(changeMaxMembersTextField.text!) {
+                    lineRef.child("maxMembers").setValue(newMaxMembers)
+                    refreshButtonPressed(self)
+                } else {
+                    Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                        let _ = self.createErrorPopUp("Did not enter valid input into respective text field!")
+                    }
+                }
+            }
+            else if identifier == "change wait time" {
+                let lineRef = Database.database().reference().child("lines").child(managedLine!)
+                if let newWaitTime = Int(changeWaitTimeTextField.text!) {
+                    lineRef.child("waitTime").setValue(newWaitTime)
+                    refreshButtonPressed(self)
+                } else {
+                    Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                        let _ = self.createErrorPopUp("Did not enter valid input into respective text field!")
+                    }
+                }
+            }
+            else if identifier == "change owner" {
+                let lineRef = Database.database().reference().child("lines").child(managedLine!)
+                let userRef = Database.database().reference().child("users")
+                userRef.observeSingleEvent(of: .value) { (snapshot) in
+                    let usersDict = snapshot.value as! [String: Any]
+                    for user in usersDict {
+                        if self.changeOwnerTextField.text == nil { break }
+                        let userDict = user.value as! [String: Any]
+                        if userDict["username"] as! String == self.changeOwnerTextField.text! {
+                            lineRef.child("creator").setValue(self.changeOwnerTextField.text!)
+                            userRef.child(user.key).child("hostedLines").child(self.managedLine!).setValue(true)
+                            userRef.child(User.current.uid).child("hostedLines").child(self.managedLine!).setValue(nil)
+                            self.dismiss(animated: true) {}
+                        }
+                    }
+                }
+            }
         } else {
-            let _ = self.createErrorPopUp("No internet connection!")
+            Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                let _ = self.createErrorPopUp("No internet connection!")
+            }
         }
     }
 }

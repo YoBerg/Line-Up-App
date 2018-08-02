@@ -111,7 +111,7 @@ class DisplayLineViewController: UIViewController {
         
                 self.lineNameLabel.text = self.managedLine!.name
                 self.creatorNameLabel.text = self.managedLine!.creator
-                self.waitTimeLabel.text = String(self.managedLine!.waitTime * memberDict.count)
+                self.waitTimeLabel.text = self.secondsToTime(self.managedLine!.waitTime * memberDict.count)
                 self.numberOfMembersLabel.text = "\(self.managedLine!.members.count) / \(self.managedLine!.maxMembers)"
                 if self.managedLine!.members.contains(User.current.uid) {
                     self.interactButton.setTitle("Leave line", for: .normal)

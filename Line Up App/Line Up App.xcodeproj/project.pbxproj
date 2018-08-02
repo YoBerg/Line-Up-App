@@ -21,7 +21,7 @@
 		FA50B71B2108FD0600E7C425 /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50B71A2108FD0500E7C425 /* Line.swift */; };
 		FA50B71F210949F400E7C425 /* ClosableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50B71E210949F400E7C425 /* ClosableTextField.swift */; };
 		FA50B721210A7B1D00E7C425 /* UIViewControllerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50B720210A7B1D00E7C425 /* UIViewControllerExtensions.swift */; };
-		FA50B723210BE3F300E7C425 /* notes.txt in Resources */ = {isa = PBXBuildFile; fileRef = FA50B722210BE3F300E7C425 /* notes.txt */; };
+		FA50B723210BE3F300E7C425 /* to-do.txt in Resources */ = {isa = PBXBuildFile; fileRef = FA50B722210BE3F300E7C425 /* to-do.txt */; };
 		FA542FAD21113BB6003A3482 /* PopUpService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA542FAC21113BB6003A3482 /* PopUpService.swift */; };
 		FA542FAF21122E9A003A3482 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA542FAE21122E9A003A3482 /* StringExtensions.swift */; };
 		FAB6670B21065B370077DB3A /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAB6670A21065B370077DB3A /* Login.storyboard */; };
@@ -54,7 +54,7 @@
 		FA50B71A2108FD0500E7C425 /* Line.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
 		FA50B71E210949F400E7C425 /* ClosableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosableTextField.swift; sourceTree = "<group>"; };
 		FA50B720210A7B1D00E7C425 /* UIViewControllerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtensions.swift; sourceTree = "<group>"; };
-		FA50B722210BE3F300E7C425 /* notes.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = notes.txt; sourceTree = "<group>"; };
+		FA50B722210BE3F300E7C425 /* to-do.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "to-do.txt"; sourceTree = "<group>"; };
 		FA542FAC21113BB6003A3482 /* PopUpService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpService.swift; sourceTree = "<group>"; };
 		FA542FAE21122E9A003A3482 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		FAB6670A21065B370077DB3A /* Login.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
@@ -129,7 +129,7 @@
 				FAB66705210655E20077DB3A /* Controllers */,
 				FA2A0C5B210654C900C28559 /* AppDelegate.swift */,
 				FA2A0C62210654C900C28559 /* Assets.xcassets */,
-				FA50B722210BE3F300E7C425 /* notes.txt */,
+				FA50B722210BE3F300E7C425 /* to-do.txt */,
 			);
 			path = "Line Up App";
 			sourceTree = "<group>";
@@ -268,7 +268,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA50B723210BE3F300E7C425 /* notes.txt in Resources */,
+				FA50B723210BE3F300E7C425 /* to-do.txt in Resources */,
 				FA2A0C66210654C900C28559 /* LaunchScreen.storyboard in Resources */,
 				FA2A0C63210654C900C28559 /* Assets.xcassets in Resources */,
 				FAB6670D21068AD00077DB3A /* GoogleService-Info.plist in Resources */,
