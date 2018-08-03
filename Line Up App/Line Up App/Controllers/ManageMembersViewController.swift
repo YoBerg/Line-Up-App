@@ -13,6 +13,12 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
     
     var popUpInput: String?
     
+    @IBAction func addDummyButtonPressed(_ sender: Any) {
+        let popUp = getInput("Creating a dummy member...", identifier: "create dummy", sender: self)
+        popUp.inputTextField.keyboardType = UIKeyboardType.alphabet
+        popUp.inputTextField.placeholder = "Select a name."
+    }
+    
     func popUpResponse(identifier: String) {
         if identifier == "kick member" {
             if isInternetAvailable() {
@@ -91,6 +97,34 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
                     let _ = self.createErrorPopUp("No internet connection!")
                 }
             }
+        } else if identifier == "create dummy" {
+            if isInternetAvailable() {
+                refreshButtonPressed(self)
+                if popUpInput == nil {
+                    let _ = createErrorPopUp("No input!")
+                    return
+                }
+                let dummyName = "Dummy \(popUpInput!)"
+                if dummyName.contains("#") || dummyName.contains("$") || dummyName.contains(".") || dummyName.contains("/") || dummyName.contains("\\") || dummyName.contains("[") || dummyName.contains("]") {
+                    Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { (_) in
+                        let _ = self.createErrorPopUp("Name cannot contain the following illegal character(s): . # $ / \\ [ ]")
+                    })
+                    return
+                }
+                let memberRef = Database.database().reference().child("lines").child(managedLine).child("members")
+                memberRef.observeSingleEvent(of: .value) { (snapshot) in
+                    var memberDict = snapshot.value as? [String: Any]
+                    if !(self.isNsnullOrNil(memberDict)) { memberDict = [:] }
+                    memberRef.child(dummyName).setValue(memberDict!.count)
+                }
+                Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                    self.refreshButtonPressed(self)
+                }
+            } else {
+                Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                    let _ = self.createErrorPopUp("No internet connection!")
+                }
+            }
         }
     }
     var managedLine: String = ""
@@ -158,9 +192,13 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
         if isInternetAvailable() {
         let member = members[indexPath.row]
         Database.database().reference().child("users").child(member.uid).child("username").observeSingleEvent(of: .value) { (snapshot) in
-            let username = snapshot.value as! String
-            cell.memberNameLabel.text = username
-            self.members[indexPath.row].username = username
+            if let username = snapshot.value as? String {
+                cell.memberNameLabel.text = username
+                self.members[indexPath.row].username = username
+            } else {
+                cell.memberNameLabel.text = self.members[indexPath.row].uid
+                self.members[indexPath.row].username = self.members[indexPath.row].uid
+            }
         }
         cell.memberSpotLabel.text = String(member.spot + 1)
         } else {

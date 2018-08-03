@@ -1,13 +1,17 @@
-Favorite lines
+Upgrade Firebase plan if app becomes bigger.
 
-make bottom home buttons more recognizable
+Refactor all brute-force searches in order to prevent excessive internet usage.
 
-Allow input for changing line wait time to something more comfortable than seconds
+Favorite lines.
 
-Test cellular connection confirmation
+Notifications.
 
-More understandable UI
+Find by location.
 
-More apparent search bar
+Make bottom home buttons more recognizable.
 
-Notifications
+*** Design App. ***
+
+More understandable UI. <<<
+
+Test cellular connection confirmation.

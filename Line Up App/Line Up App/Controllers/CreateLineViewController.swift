@@ -25,48 +25,53 @@ class CreateLineViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func createLineButtonPressed(_ sender: Any) {
         if isInternetAvailable() {
-        let currentUser = User.current
-        let rootRef = Database.database().reference()
-        let lineRef = rootRef.child("lines")
-        let userRef = rootRef.child("users").child(currentUser.uid)
-        if nameTextField.text == nil || nameTextField.text == "" {
-            nameTextField.text = nameTextField.placeholder
-        }
-        let lineName: String = nameTextField.text!
-        if lineName.contains(".") || lineName.contains("#") || lineName.contains("$") || lineName.contains("[") || lineName.contains("]") || lineName.contains("/") || lineName.contains("\\") {
-            let _ = createErrorPopUp("Line name cannot contain the character(s) '.' '#' '$' '/' '\\' '[' or ']'.")
-            return
-        }
-        guard let maxMembers: Int = Int(maxMembersTextField.text!) else {
-            let _ = createErrorPopUp("Please specify the amount of total members your line can have.")
-            return
-        }
-        if maxMembers == 0 {
-            let _ = createErrorPopUp("You must allow more than 0 members in your line!")
-            return
-        }
-        guard let waitTimeHours: Int = Int(waitTimeTextFieldHours.text!) else {
-            let _ = createErrorPopUp("Please specify the amount of hours the average wait would take.")
-            return
-        }
-        guard let waitTimeMinutes: Int = Int(waitTimeTextFieldMinutes.text!) else {
-            let _ = createErrorPopUp("Please specify the amount of minutes the average wait would take.")
-            return
-        }
-        guard let waitTimeSeconds: Int = Int(waitTimeTextFieldSeconds.text!) else {
-            let _ = createErrorPopUp("Please specify the amount of seconds the average wait would take.")
-            return
-        }
-        lineRef.child(lineName).observeSingleEvent(of: .value, with: { (snapshot) in
-            if let _ = snapshot.value as? [String : Any] {
-                let _ = self.createErrorPopUp("line named \(lineName) already exists!")
-                return
-            } else {
-                lineRef.child(lineName).setValue(["creator": currentUser.username, "maxMembers": maxMembers, "waitTime": waitTimeHours*3600+waitTimeMinutes*60+waitTimeSeconds])
-                userRef.child("hostedLines").child(lineName).setValue(true)
-                self.performSegue(withIdentifier: "manageLine", sender: self)
+            let currentUser = User.current
+            let rootRef = Database.database().reference()
+            let lineRef = rootRef.child("lines")
+            let userRef = rootRef.child("users").child(currentUser.uid)
+            if nameTextField.text == nil || nameTextField.text == "" {
+                nameTextField.text = nameTextField.placeholder
             }
-        })
+            let lineName: String = nameTextField.text!
+            if lineName.contains(".") || lineName.contains("#") || lineName.contains("$") || lineName.contains("[") || lineName.contains("]") || lineName.contains("/") || lineName.contains("\\") {
+                let _ = createErrorPopUp("Line name cannot contain the character(s) '.' '#' '$' '/' '\\' '[' or ']'.")
+                return
+            }
+            if maxMembersTextField.text == nil || maxMembersTextField.text == "" { maxMembersTextField.text = "50" }
+            guard let maxMembers: Int = Int(maxMembersTextField.text!) else {
+                let _ = createErrorPopUp("Invalid input for maximum members.")
+                return
+            }
+            var emptyCounter = 0
+            if waitTimeTextFieldHours.text == nil || waitTimeTextFieldHours.text == "" { waitTimeTextFieldHours.text = "0" ; emptyCounter += 1 }
+            guard let waitTimeHours: Int = Int(waitTimeTextFieldHours.text!) else {
+                let _ = createErrorPopUp("Please specify the amount of hours the average wait would take.")
+                return
+            }
+            if waitTimeTextFieldMinutes.text == nil || waitTimeTextFieldMinutes.text == "" { waitTimeTextFieldMinutes.text = "1" ; emptyCounter += 1 }
+            guard let waitTimeMinutes: Int = Int(waitTimeTextFieldMinutes.text!) else {
+                let _ = createErrorPopUp("Please specify the amount of minutes the average wait would take.")
+                return
+            }
+            if waitTimeTextFieldSeconds.text == nil || waitTimeTextFieldSeconds.text == "" { waitTimeTextFieldSeconds.text = "0" ; emptyCounter += 1 }
+            guard let waitTimeSeconds: Int = Int(waitTimeTextFieldSeconds.text!) else {
+                let _ = createErrorPopUp("Please specify the amount of seconds the average wait would take.")
+                return
+            }
+            if emptyCounter > 2 {
+                let _ = createErrorPopUp("Please specify a wait time!")
+                return
+            }
+            lineRef.child(lineName).observeSingleEvent(of: .value, with: { (snapshot) in
+                if let _ = snapshot.value as? [String : Any] {
+                    let _ = self.createErrorPopUp("line named \(lineName) already exists!")
+                    return
+                } else {
+                    lineRef.child(lineName).setValue(["creator": currentUser.username, "maxMembers": maxMembers, "waitTime": waitTimeHours*3600+waitTimeMinutes*60+waitTimeSeconds])
+                    userRef.child("hostedLines").child(lineName).setValue(true)
+                    self.performSegue(withIdentifier: "manageLine", sender: self)
+                }
+            })
         } else {
             let _ = createErrorPopUp("No internet connection!")
         }

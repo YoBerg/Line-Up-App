@@ -25,6 +25,9 @@ class createUsernameViewController: UIViewController, UITextFieldDelegate {
         guard let firUser = Auth.auth().currentUser,
             let username = usernameTextField.text,
             !username.isEmpty else { return }
+            if username.contains("/") || username.contains("$") || username.contains("\\") || username.contains("#") || username.contains("[") || username.contains("]") || username.contains(".") {
+                let _ = createErrorPopUp("username must not contain the following: # $ / \\ [ ] .")
+            }
         
         UserService.create(firUser, username: username) { (user) in
             guard let user = user else {

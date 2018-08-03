@@ -211,6 +211,12 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
             else if identifier == "change max members" {
                 let lineRef = Database.database().reference().child("lines").child(managedLine!)
                 if let newMaxMembers = Int(changeMaxMembersTextField.text!) {
+                    if newMaxMembers < 1 {
+                        Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                            let _ = self.createErrorPopUp("Cannot set maximum members to less than 1")
+                        }
+                        return
+                    }
                     lineRef.child("maxMembers").setValue(newMaxMembers)
                     refreshButtonPressed(self)
                 } else {
@@ -221,14 +227,56 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
             }
             else if identifier == "change wait time" {
                 let lineRef = Database.database().reference().child("lines").child(managedLine!)
-                if let newWaitTime = Int(changeWaitTimeTextField.text!) {
-                    lineRef.child("waitTime").setValue(newWaitTime)
-                    refreshButtonPressed(self)
-                } else {
-                    Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
-                        let _ = self.createErrorPopUp("Did not enter valid input into respective text field!")
-                    }
+                var newWaitTimeText = changeWaitTimeTextField.text != nil ? changeWaitTimeTextField.text! : ""
+                newWaitTimeText = newWaitTimeText.replacingOccurrences(of: ",", with: "")
+                var colonOccurences = 0
+                for char in newWaitTimeText {
+                    colonOccurences += char == ":" ? 1 : 0
                 }
+                if colonOccurences != 2 {
+                    Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                        let _ = self.createErrorPopUp("Did not enter time in correct format. Try Hrs:Mins:Secs")
+                    }
+                    return
+                }
+                let waitTimeArray = newWaitTimeText.split(separator: ":")
+                guard let hours = Int(waitTimeArray[0]) else {
+                    Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                        let _ = self.createErrorPopUp("Could not convert \(waitTimeArray[0]) into a number. Make sure you only used numbers")
+                    }
+                    return
+                }
+                guard let minutes = Int(waitTimeArray[1]) else {
+                    Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                        let _ = self.createErrorPopUp("Could not convert \(waitTimeArray[1]) into a number. Make sure you only used numbers")
+                    }
+                    return
+                }
+                guard let seconds = Int(waitTimeArray[2]) else {
+                    Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                        let _ = self.createErrorPopUp("Could not convert \(waitTimeArray[2]) into a number. Make sure you only used numbers")
+                    }
+                    return
+                }
+                if hours > 9999999 {
+                    Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                        let _ = self.createErrorPopUp("Value for hours is too large! Do not exceed 9,999,999")
+                    }
+                    return
+                } else if minutes > 59 {
+                    Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                        let _ = self.createErrorPopUp("Value for minutes is too large! Do not exceed 59")
+                    }
+                    return
+                } else if seconds > 59 {
+                    Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                        let _ = self.createErrorPopUp("Value for seconds is too large! Do not exceed 59")
+                    }
+                    return
+                }
+                let newWaitTime = seconds+(minutes*60)+(hours*3600)
+                lineRef.child("waitTime").setValue(newWaitTime)
+                self.refreshButtonPressed(self)
             }
             else if identifier == "change owner" {
                 let lineRef = Database.database().reference().child("lines").child(managedLine!)

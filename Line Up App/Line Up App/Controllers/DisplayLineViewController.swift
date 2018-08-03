@@ -13,6 +13,7 @@ class DisplayLineViewController: UIViewController {
     
     var managedLine: Line?
     
+    @IBOutlet var mainView: UIView!
     @IBOutlet weak var lineNameLabel: UILabel!
     @IBOutlet weak var creatorNameLabel: UILabel!
     @IBOutlet weak var numberOfMembersLabel: UILabel!
@@ -120,7 +121,13 @@ class DisplayLineViewController: UIViewController {
                     self.interactButton.setTitle("Take a spot", for: .normal)
                     self.spotNumberLabel.isHidden = true
                 }
-                self.spotNumberLabel.text = "Spot #\(memberDict.count)"
+                if memberDict.count == 1 && memberArray.contains(User.current.uid) {
+                    self.spotNumberLabel.text = "You are first!"
+                    self.mainView.backgroundColor = UIColor(red: CGFloat(87/255), green: CGFloat(1), blue: CGFloat(117/255), alpha: CGFloat(1))
+                } else {
+                    self.spotNumberLabel.text = "Spot #\(memberDict.count)"
+                    self.mainView.backgroundColor = UIColor(red: CGFloat(1), green: CGFloat(1), blue: CGFloat(1), alpha: CGFloat(1))
+                }
             } else {
                 let _ = self.createErrorPopUp("Line no longer exists!")
                 self.dismiss(animated: true, completion: {
