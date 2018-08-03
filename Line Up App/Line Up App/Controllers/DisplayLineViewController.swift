@@ -109,23 +109,28 @@ class DisplayLineViewController: UIViewController {
                 self.managedLine!.waitTime = lineDict["waitTime"] as! Int
                 self.managedLine!.members = memberArray
                 //refreshing labels
-        
+                
                 self.lineNameLabel.text = self.managedLine!.name
-                self.creatorNameLabel.text = self.managedLine!.creator
-                self.waitTimeLabel.text = self.secondsToTime(self.managedLine!.waitTime * memberDict.count)
-                self.numberOfMembersLabel.text = "\(self.managedLine!.members.count) / \(self.managedLine!.maxMembers)"
+                self.creatorNameLabel.text = "Created by \(self.managedLine!.creator)"
+                self.numberOfMembersLabel.preferredMaxLayoutWidth = 300
+                self.numberOfMembersLabel.text = "\(self.managedLine!.members.count) / \(self.managedLine!.maxMembers) Members"
+                var selfIndex = 0
                 if self.managedLine!.members.contains(User.current.uid) {
                     self.interactButton.setTitle("Leave line", for: .normal)
+                    selfIndex = memberDict[User.current.uid]!+1
+                    self.waitTimeLabel.preferredMaxLayoutWidth = 300
+                    self.waitTimeLabel.text = "Approximately \(self.secondsToTime(self.managedLine!.waitTime * selfIndex)) left."
                     self.spotNumberLabel.isHidden = false
                 } else {
                     self.interactButton.setTitle("Take a spot", for: .normal)
+                    self.waitTimeLabel.text = "\(self.secondsToTime(self.managedLine!.waitTime * memberDict.count)) wait time."
                     self.spotNumberLabel.isHidden = true
                 }
                 if memberDict.count == 1 && memberArray.contains(User.current.uid) {
                     self.spotNumberLabel.text = "You are first!"
                     self.mainView.backgroundColor = UIColor(red: CGFloat(87/255), green: CGFloat(1), blue: CGFloat(117/255), alpha: CGFloat(1))
                 } else {
-                    self.spotNumberLabel.text = "Spot #\(memberDict.count)"
+                    self.spotNumberLabel.text = "Spot #\(selfIndex)"
                     self.mainView.backgroundColor = UIColor(red: CGFloat(1), green: CGFloat(1), blue: CGFloat(1), alpha: CGFloat(1))
                 }
             } else {

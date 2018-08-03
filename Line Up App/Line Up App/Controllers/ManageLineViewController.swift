@@ -22,11 +22,11 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
     @IBOutlet weak var nextButton: UIButton!
     
     @IBOutlet weak var editLineView: UIView!
-    @IBOutlet weak var changeMaxMembersTextField: UITextField!
+    @IBOutlet weak var changeMaxMembersTextField: ClosableTextField!
     @IBOutlet weak var changeMaxMembersButton: UIButton!
-    @IBOutlet weak var changeWaitTimeTextField: UITextField!
+    @IBOutlet weak var changeWaitTimeTextField: ClosableTextField!
     @IBOutlet weak var changeWaitTimeButton: UIButton!
-    @IBOutlet weak var changeOwnerTextField: UITextField!
+    @IBOutlet weak var changeOwnerTextField: ClosableTextField!
     @IBOutlet weak var changeOwnerButton: UIButton!
     @IBOutlet weak var exitEditLineViewButton: UIButton!
     
@@ -81,11 +81,11 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
         let lineRef = Database.database().reference().child("lines").child(managedLine!)
         lineRef.observeSingleEvent(of: .value) { (snapshot) in
             let lineDict = snapshot.value as! [String : Any]
-            self.waitTimeLabel.text = self.secondsToTime(lineDict["waitTime"] as! Int)
+            self.waitTimeLabel.text = "\(self.secondsToTime(lineDict["waitTime"] as! Int)) / spot"
             let members = lineDict["members"] as? [String: Int]
             let lineDictMembers = members != nil || members?.count == 0 ? Array(members!.keys) : []
             let numberOfMembers: Int = lineDictMembers.count
-            self.numberOfMembersLabel.text = "\(numberOfMembers) / \(lineDict["maxMembers"] ?? 0)"
+            self.numberOfMembersLabel.text = "\(numberOfMembers) / \(lineDict["maxMembers"] ?? 0) Members"
         }
             self.lineNameLabel.text = managedLine!
         } else {
@@ -185,8 +185,10 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
                 let members: [String: Int] = membersFromDict != nil ? membersFromDict! : [:]
                 let waitTime = lineDict["waitTime"] as! Int
                 let maxMembers = lineDict["maxMembers"] as! Int
-                self.numberOfMembersLabel.text = "\(members.count) / \(maxMembers)"
-                self.waitTimeLabel.text = self.secondsToTime(waitTime)
+                self.numberOfMembersLabel.preferredMaxLayoutWidth = 300
+                self.numberOfMembersLabel.text = "\(members.count) / \(maxMembers) Members"
+                self.waitTimeLabel.preferredMaxLayoutWidth = 300
+                self.waitTimeLabel.text = "\(self.secondsToTime(waitTime)) / spot."
             } else {
                 let _ = self.createErrorPopUp("Line no longer exists!")
                 self.performSegue(withIdentifier: "unwindWithSegue", sender: self)
@@ -240,6 +242,12 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
                     return
                 }
                 let waitTimeArray = newWaitTimeText.split(separator: ":")
+                if waitTimeArray.count != 3 {
+                    Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                        let _ = self.createErrorPopUp("Bad input! Is one of the fields empty?")
+                    }
+                    return
+                }
                 guard let hours = Int(waitTimeArray[0]) else {
                     Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
                         let _ = self.createErrorPopUp("Could not convert \(waitTimeArray[0]) into a number. Make sure you only used numbers")

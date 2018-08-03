@@ -11,11 +11,11 @@ import FirebaseDatabase
 
 class CreateLineViewController: UIViewController, UITextFieldDelegate {
     
-    @IBOutlet weak var nameTextField: UITextField!
-    @IBOutlet weak var maxMembersTextField: UITextField!
-    @IBOutlet weak var waitTimeTextFieldHours: UITextField!
-    @IBOutlet weak var waitTimeTextFieldMinutes: UITextField!
-    @IBOutlet weak var waitTimeTextFieldSeconds: UITextField!
+    @IBOutlet weak var nameTextField: ClosableTextField!
+    @IBOutlet weak var maxMembersTextField: ClosableTextField!
+    @IBOutlet weak var waitTimeTextFieldHours: ClosableTextField!
+    @IBOutlet weak var waitTimeTextFieldMinutes: ClosableTextField!
+    @IBOutlet weak var waitTimeTextFieldSeconds: ClosableTextField!
     
     @IBAction func unwindWithSegue(segue: UIStoryboardSegue) {
     }

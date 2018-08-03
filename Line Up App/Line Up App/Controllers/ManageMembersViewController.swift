@@ -190,19 +190,19 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.TableViewCell.ListMembersTableViewCell, for: indexPath) as! ListMembersTableViewCell
         if isInternetAvailable() {
-        let member = members[indexPath.row]
-        Database.database().reference().child("users").child(member.uid).child("username").observeSingleEvent(of: .value) { (snapshot) in
-            if let username = snapshot.value as? String {
-                cell.memberNameLabel.text = username
-                self.members[indexPath.row].username = username
-            } else {
-                cell.memberNameLabel.text = self.members[indexPath.row].uid
-                self.members[indexPath.row].username = self.members[indexPath.row].uid
+            let member = members[indexPath.row]
+            Database.database().reference().child("users").child(member.uid).child("username").observeSingleEvent(of: .value) { (snapshot) in
+                if let username = snapshot.value as? String {
+                    cell.memberNameLabel.text = username
+                    self.members[indexPath.row].username = username
+                } else {
+                    cell.memberNameLabel.text = self.members[indexPath.row].uid
+                    self.members[indexPath.row].username = self.members[indexPath.row].uid
+                }
             }
-        }
-        cell.memberSpotLabel.text = String(member.spot + 1)
+            cell.memberSpotLabel.text = "Spot #\(member.spot + 1)"
         } else {
-            let _ = self.createErrorPopUp("No members in line!")
+            let _ = self.createErrorPopUp("No internet connection!")
         }
         
         return cell

@@ -10,8 +10,8 @@ Find by location.
 
 Make bottom home buttons more recognizable.
 
+Enter Apple Dev Program
+
+Implement support for rotation.
+
 *** Design App. ***
-
-More understandable UI. <<<
-
-Test cellular connection confirmation.
