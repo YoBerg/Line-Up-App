@@ -23,7 +23,9 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBOutlet weak var linesTableView: UITableView!
     @IBOutlet weak var searchTextField: ClosableTextField!
     @IBOutlet weak var searchButton: UIButton!
-
+    @IBOutlet weak var lineImInButton: UIButton!
+    @IBOutlet weak var lineIHostButton: UIButton!
+    
     @IBAction func signOutButtonTapped(_ sender: UIBarButtonItem) {
         let _ = confirmAction("Are you sure you want to sign out?", identifier: "sign out", sender: self)
     }
@@ -174,7 +176,10 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         linesTableView.delegate = self
         linesTableView.dataSource = self
         searchTextField.delegate = self
-        
+        lineImInButton.layer.borderWidth = 1
+        lineImInButton.layer.borderColor = UIColor(red: CGFloat(30/255), green: CGFloat(30/255), blue: CGFloat(30/255), alpha: CGFloat(1)).cgColor
+        lineIHostButton.layer.borderWidth = 1
+        lineIHostButton.layer.borderColor = UIColor(red: CGFloat(30/255), green: CGFloat(30/255), blue: CGFloat(30/255), alpha: CGFloat(1)).cgColor
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

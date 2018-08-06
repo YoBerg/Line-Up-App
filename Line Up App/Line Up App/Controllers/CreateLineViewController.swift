@@ -16,6 +16,7 @@ class CreateLineViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var waitTimeTextFieldHours: ClosableTextField!
     @IBOutlet weak var waitTimeTextFieldMinutes: ClosableTextField!
     @IBOutlet weak var waitTimeTextFieldSeconds: ClosableTextField!
+    @IBOutlet weak var createButton: UIButton!
     
     @IBAction func unwindWithSegue(segue: UIStoryboardSegue) {
     }
@@ -103,6 +104,8 @@ class CreateLineViewController: UIViewController, UITextFieldDelegate {
         waitTimeTextFieldMinutes.delegate = self
         waitTimeTextFieldSeconds.delegate = self
         nameTextField.placeholder = "\(currentUser.username)s Line"
+        createButton.clipsToBounds = true
+        createButton.layer.cornerRadius = 6
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {

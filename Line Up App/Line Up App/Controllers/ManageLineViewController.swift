@@ -20,6 +20,9 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
     @IBOutlet weak var waitTimeLabel: UILabel!
     @IBOutlet weak var navigationBarFromHome: UINavigationBar!
     @IBOutlet weak var nextButton: UIButton!
+    @IBOutlet weak var editLineButton: UIButton!
+    @IBOutlet weak var manageMembersButton: UIButton!
+    @IBOutlet weak var deleteLineButton: UIButton!
     
     @IBOutlet weak var editLineView: UIView!
     @IBOutlet weak var changeMaxMembersTextField: ClosableTextField!
@@ -74,7 +77,16 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        nextButton.layer.cornerRadius = 6
+        nextButton.clipsToBounds = true
+        editLineButton.layer.cornerRadius = 6
+        editLineButton.clipsToBounds = true
+        manageMembersButton.layer.cornerRadius = 6
+        manageMembersButton.clipsToBounds = true
+        deleteLineButton.layer.cornerRadius = 6
+        deleteLineButton.clipsToBounds = true
+        editLineView.layer.cornerRadius = 10
+        editLineView.clipsToBounds = true
     }
     override func viewWillAppear(_ animated: Bool) {
         if isInternetAvailable() {
@@ -292,7 +304,12 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
                 userRef.observeSingleEvent(of: .value) { (snapshot) in
                     let usersDict = snapshot.value as! [String: Any]
                     for user in usersDict {
-                        if self.changeOwnerTextField.text == nil { break }
+                        if self.changeOwnerTextField.text == nil || self.changeOwnerTextField.text == "" {
+                            Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { (_) in
+                                let _ = self.createErrorPopUp("Did not enter valid input into respective text field!")
+                            })
+                            break
+                        }
                         let userDict = user.value as! [String: Any]
                         if userDict["username"] as! String == self.changeOwnerTextField.text! {
                             lineRef.child("creator").setValue(self.changeOwnerTextField.text!)
@@ -301,6 +318,9 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
                             self.dismiss(animated: true) {}
                         }
                     }
+                    Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { (_) in
+                        let _ = self.createErrorPopUp("Did not find user \(self.changeOwnerTextField.text!)")
+                    })
                 }
             }
         } else {

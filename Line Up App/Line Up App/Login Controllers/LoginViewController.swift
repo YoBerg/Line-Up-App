@@ -19,6 +19,8 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        loginButton.layer.cornerRadius = 10
+        loginButton.clipsToBounds = true
     }
     
     @IBAction func loginButtonTapped(_ sender: UIButton) {
@@ -43,7 +45,7 @@ extension LoginViewController: FUIAuthDelegate {
     func authUI(_ authUI: FUIAuth, didSignInWith authDataResult: AuthDataResult?, error: Error?) {
         if let error = error {
             if isInternetAvailable() {
-                assertionFailure("Error signing in: \(error.localizedDescription)")
+                print(error.localizedDescription)
             } else {
                 let _ = createErrorPopUp("No internet connection!")
             }

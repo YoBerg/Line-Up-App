@@ -12,6 +12,7 @@ import FirebaseDatabase
 class ManageMembersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, PopUpViewControllerListener {
     
     var popUpInput: String?
+    var dummyName = ""
     
     @IBAction func addDummyButtonPressed(_ sender: Any) {
         let popUp = getInput("Creating a dummy member...", identifier: "create dummy", sender: self)
@@ -97,33 +98,55 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
                     let _ = self.createErrorPopUp("No internet connection!")
                 }
             }
-        } else if identifier == "create dummy" {
+        }
+        else if identifier == "create dummy" {
             if isInternetAvailable() {
                 refreshButtonPressed(self)
                 if popUpInput == nil {
                     let _ = createErrorPopUp("No input!")
                     return
                 }
-                let dummyName = "Dummy \(popUpInput!)"
+                dummyName = "Dummy \(popUpInput!)"
                 if dummyName.contains("#") || dummyName.contains("$") || dummyName.contains(".") || dummyName.contains("/") || dummyName.contains("\\") || dummyName.contains("[") || dummyName.contains("]") {
                     Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { (_) in
                         let _ = self.createErrorPopUp("Name cannot contain the following illegal character(s): . # $ / \\ [ ]")
                     })
                     return
                 }
-                let memberRef = Database.database().reference().child("lines").child(managedLine).child("members")
-                memberRef.observeSingleEvent(of: .value) { (snapshot) in
-                    var memberDict = snapshot.value as? [String: Any]
-                    if !(self.isNsnullOrNil(memberDict)) { memberDict = [:] }
-                    memberRef.child(dummyName).setValue(memberDict!.count)
-                }
-                Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
-                    self.refreshButtonPressed(self)
+                Database.database().reference().child("lines").child(managedLine).child("bannedMembers").observeSingleEvent(of: .value) { (snapshot) in
+                    if let bannedMemberDict = snapshot.value as? [String: Bool] {
+                        if bannedMemberDict[self.dummyName] == true {
+                            Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { (_) in
+                                let _ = self.confirmAction("\(self.dummyName) is banned! Add anyways?", identifier: "create dummy part 2", sender: self)
+                            })
+                        } else {
+                            self.popUpResponse(identifier: "create dummy part 2")
+                        }
+                    } else {
+                        self.popUpResponse(identifier: "create dummy part 2")
+                    }
                 }
             } else {
                 Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
                     let _ = self.createErrorPopUp("No internet connection!")
                 }
+            }
+        } else if identifier == "create dummy part 2" {
+            if isInternetAvailable() {
+                let dataRef = Database.database().reference()
+                let linesRef = dataRef.child("lines")
+                let lineRef = linesRef.child(managedLine)
+                let memberRef = lineRef.child("members")
+                memberRef.observeSingleEvent(of: .value) { (snapshot) in
+                    var memberDict = snapshot.value as? [String: Any]
+                    if !(self.isNsnullOrNil(memberDict)) { memberDict = [:] }
+                    memberRef.child(self.dummyName).setValue(memberDict!.count)
+                }
+                Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                    self.refreshButtonPressed(self)
+                }
+            } else {
+                let _ = self.createErrorPopUp("No internet connection!")
             }
         }
     }

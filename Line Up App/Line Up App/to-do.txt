@@ -4,6 +4,8 @@ Refactor all brute-force searches in order to prevent excessive internet usage.
 
 Favorite lines.
 
+Implement support for rotation.
+
 Notifications.
 
 Find by location.
@@ -12,6 +14,14 @@ Make bottom home buttons more recognizable.
 
 Enter Apple Dev Program
 
-Implement support for rotation.
-
 *** Design App. ***
+
+
+
+------------------
+
+User Test notes
+
+-Specify if wait time moves people forward in line automatically.
+
+-Change 1st spot color

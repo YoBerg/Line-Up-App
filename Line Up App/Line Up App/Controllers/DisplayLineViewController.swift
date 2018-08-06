@@ -131,7 +131,7 @@ class DisplayLineViewController: UIViewController {
                     self.mainView.backgroundColor = UIColor(red: CGFloat(87/255), green: CGFloat(1), blue: CGFloat(117/255), alpha: CGFloat(1))
                 } else {
                     self.spotNumberLabel.text = "Spot #\(selfIndex)"
-                    self.mainView.backgroundColor = UIColor(red: CGFloat(1), green: CGFloat(1), blue: CGFloat(1), alpha: CGFloat(1))
+                    self.mainView.backgroundColor = UIColor(red: CGFloat(1), green: CGFloat(0.9607), blue: CGFloat(0.8471), alpha: CGFloat(1))
                 }
             } else {
                 let _ = self.createErrorPopUp("Line no longer exists!")

@@ -18,6 +18,8 @@ class createUsernameViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         usernameTextField.delegate = self
+        nextButton.layer.cornerRadius = 8
+        nextButton.clipsToBounds = true
     }
     
     @IBAction func nextButtonTapped(_ sender: UIButton) {
