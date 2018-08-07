@@ -46,21 +46,35 @@ class CreateLineViewController: UIViewController, UITextFieldDelegate {
             var emptyCounter = 0
             if waitTimeTextFieldHours.text == nil || waitTimeTextFieldHours.text == "" { waitTimeTextFieldHours.text = "0" ; emptyCounter += 1 }
             guard let waitTimeHours: Int = Int(waitTimeTextFieldHours.text!) else {
-                let _ = createErrorPopUp("Please specify the amount of hours the average wait would take.")
-                return
-            }
-            if waitTimeTextFieldMinutes.text == nil || waitTimeTextFieldMinutes.text == "" { waitTimeTextFieldMinutes.text = "1" ; emptyCounter += 1 }
-            guard let waitTimeMinutes: Int = Int(waitTimeTextFieldMinutes.text!) else {
-                let _ = createErrorPopUp("Please specify the amount of minutes the average wait would take.")
+                let _ = createErrorPopUp("Invalid input for wait time hours!")
                 return
             }
             if waitTimeTextFieldSeconds.text == nil || waitTimeTextFieldSeconds.text == "" { waitTimeTextFieldSeconds.text = "0" ; emptyCounter += 1 }
             guard let waitTimeSeconds: Int = Int(waitTimeTextFieldSeconds.text!) else {
-                let _ = createErrorPopUp("Please specify the amount of seconds the average wait would take.")
+                let _ = createErrorPopUp("Invalid input for wait time seconds!")
+                return
+            }
+            if waitTimeTextFieldMinutes.text == nil || waitTimeTextFieldMinutes.text == "" {
+                waitTimeTextFieldMinutes.text = "0"
+                emptyCounter += 1
+            }
+            guard let waitTimeMinutes: Int = Int(waitTimeTextFieldMinutes.text!) else {
+                let _ = createErrorPopUp("Invalid input for wait time minutes!")
                 return
             }
             if emptyCounter > 2 {
-                let _ = createErrorPopUp("Please specify a wait time!")
+                let _ = createErrorPopUp("Please set at least 1 value for wait time!")
+                waitTimeTextFieldHours.text = ""
+                waitTimeTextFieldMinutes.text = ""
+                waitTimeTextFieldSeconds.text = ""
+                return
+            } else {
+                if waitTimeTextFieldHours.text == nil || waitTimeTextFieldHours.text == "" { waitTimeTextFieldHours.text = "0" }
+                if waitTimeTextFieldMinutes.text == nil || waitTimeTextFieldHours.text == "" { waitTimeTextFieldHours.text = "0" }
+                if waitTimeTextFieldSeconds.text == nil || waitTimeTextFieldHours.text == "" { waitTimeTextFieldHours.text = "0" }
+            }
+            if waitTimeHours*3600+waitTimeMinutes*60+waitTimeSeconds < 1 {
+                let _ = createErrorPopUp("Cannot have wait time of 0 or less seconds!")
                 return
             }
             lineRef.child(lineName).observeSingleEvent(of: .value, with: { (snapshot) in
@@ -68,7 +82,7 @@ class CreateLineViewController: UIViewController, UITextFieldDelegate {
                     let _ = self.createErrorPopUp("line named \(lineName) already exists!")
                     return
                 } else {
-                    lineRef.child(lineName).setValue(["creator": currentUser.username, "maxMembers": maxMembers, "waitTime": waitTimeHours*3600+waitTimeMinutes*60+waitTimeSeconds])
+                    lineRef.child(lineName).setValue(["creator": currentUser.username, "originalCreator": currentUser.uid, "maxMembers": maxMembers, "waitTime": waitTimeHours*3600+waitTimeMinutes*60+waitTimeSeconds])
                     userRef.child("hostedLines").child(lineName).setValue(true)
                     self.performSegue(withIdentifier: "manageLine", sender: self)
                 }

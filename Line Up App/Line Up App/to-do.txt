@@ -1,5 +1,9 @@
 Upgrade Firebase plan if app becomes bigger.
 
+Require email verification.
+
+Refactor dummy checks to be in a function.
+
 Refactor all brute-force searches in order to prevent excessive internet usage.
 
 Favorite lines.
@@ -12,16 +16,18 @@ Find by location.
 
 Make bottom home buttons more recognizable.
 
-Enter Apple Dev Program
+Add loading spinner to notify users that their content is coming. Slowly...
 
-*** Design App. ***
+*** PUBLISH. ***
 
+Ready app to submit to app store.
 
+Create icon.
+
+Enter Apple Dev Program.
 
 ------------------
 
 User Test notes
-
--Specify if wait time moves people forward in line automatically.
 
 -Change 1st spot color

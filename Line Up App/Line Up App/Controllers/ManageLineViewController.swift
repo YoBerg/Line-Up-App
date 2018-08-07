@@ -42,7 +42,7 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
     }
     
     @IBAction func changeOwnerButtonPressed(_ sender: Any) {
-        let _ = confirmAction("About to change owner of this line. Confirm? (This action cannot be undone.)", identifier: "change owner", sender: self)
+        let _ = confirmAction("About to change owner of this line. Confirm? (This action cannot be undone. The original creator is recorded.)", identifier: "change owner", sender: self)
     }
     
     @IBAction func exitEditLineViewButton(_ sender: Any) {
@@ -172,7 +172,11 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
                             Database.database().reference().child("users").child(member.key).child("queuedLines").child(self.managedLine!).setValue(nil)
                         } else {
                             memberRef.child(member.key).setValue(member.value - 1)
-                            Database.database().reference().child("users").child(member.key).child("queuedLines").child(self.managedLine!).setValue(member.value - 1)
+                            Database.database().reference().child("lines").child(self.managedLine!).child("dummies").child(member.key).observeSingleEvent(of: .value, with: { (snapshot) in
+                                if snapshot.value as? Bool != true {
+                                    Database.database().reference().child("users").child(member.key).child("queuedLines").child(self.managedLine!).setValue(member.value - 1)
+                                }
+                            })
                         }
                     }
                 } else {

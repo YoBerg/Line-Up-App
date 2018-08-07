@@ -9,6 +9,7 @@
 import UIKit
 import Foundation
 import SystemConfiguration
+import FirebaseDatabase
 
 extension UIViewController {
     

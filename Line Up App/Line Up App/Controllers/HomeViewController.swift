@@ -9,8 +9,9 @@
 import UIKit
 import FirebaseDatabase
 
-class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, PopUpViewControllerListener {
+class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, PopUpViewControllerListener, flagButtonDelegate {
     
+    var flagIndexRow = 0
     var lines = [Line]() {
         didSet {
             self.linesTableView.reloadData()
@@ -52,6 +53,21 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             self.view.window?.rootViewController = initialViewController
             self.view.window?.makeKeyAndVisible()
         }
+        else if identifier == "flag line" {
+            if isInternetAvailable() {
+                let flagRef = Database.database().reference().child("flaggedLines").child(lines[flagIndexRow].name)
+                flagRef.child("creator").setValue(lines[flagIndexRow].creator)
+                flagRef.child("originalCreator").setValue(lines[flagIndexRow].originalCreator)
+                flagRef.child("flaggers").child(User.current.uid).setValue(true)
+                Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                    let _ = self.createErrorPopUp("Thank you! Your request will be later reviewed by admins.")
+                }
+            } else {
+                Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                    let _ = self.createErrorPopUp("No internet connection! Please re-connect and then flag this line!")
+                }
+            }
+        }
     }
     
     @IBAction func searchButtonPressed(_ sender: Any) {
@@ -77,7 +93,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                     if result != nil {
                         let memberDict: [String: Int] = self.isNsnullOrNil(lineDict["members"]) ? lineDict["members"] as! [String: Int] : [:]
                         let memberArray: [String] = memberDict.map{$0.key}
-                        let newLine = Line(name: line.key, waitTime: lineDict["waitTime"] as! Int, members: memberArray, maxMembers: lineDict["maxMembers"] as! Int, creator: lineDict["creator"] as! String)
+                        let newLine = Line(name: line.key, waitTime: lineDict["waitTime"] as! Int, members: memberArray, maxMembers: lineDict["maxMembers"] as! Int, creator: lineDict["creator"] as! String, originalCreator: lineDict["originalCreator"] as! String)
                         newLine.searchIndex = result!
                         self.lines.append(newLine)
                         if self.lines.count >= 10 { break }
@@ -113,7 +129,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                             // 6
                             let members = lineDict["members"] as? [String: Int]
                             let membersArray: [String] = members != nil ? Array(members!.keys) : []
-                            self.lines.append(Line(name: lineName.key, waitTime: lineDict["waitTime"] as! Int, members: membersArray, maxMembers: lineDict["maxMembers"] as! Int, creator: lineDict["creator"] as! String))
+                            self.lines.append(Line(name: lineName.key, waitTime: lineDict["waitTime"] as! Int, members: membersArray, maxMembers: lineDict["maxMembers"] as! Int, creator: lineDict["creator"] as! String, originalCreator: lineDict["originalCreator"] as! String))
                         }
                     })
                 }
@@ -152,7 +168,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                             // 6
                             let members = lineDict["members"] as? [String: Int]
                             let membersArray: [String] = members != nil ? Array(members!.keys) : []
-                            self.lines.append(Line(name: lineName.key, waitTime: lineDict["waitTime"] as! Int, members: membersArray, maxMembers: lineDict["maxMembers"] as! Int, creator: lineDict["creator"] as! String))
+                            self.lines.append(Line(name: lineName.key, waitTime: lineDict["waitTime"] as! Int, members: membersArray, maxMembers: lineDict["maxMembers"] as! Int, creator: lineDict["creator"] as! String, originalCreator: lineDict["originalCreator"] as! String))
                         }
                     })
                 }
@@ -192,9 +208,12 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.TableViewCell.ListLinesTableViewCell, for: indexPath) as! ListLinesTableViewCell
 
         let line = lines[indexPath.row]
+        cell.delegate = self
+        cell.indexPath = indexPath
         cell.LineNameLabel.text = line.name
         cell.LineCreatorLabel.text = "by " + line.creator
         cell.WaitTimeLabel.text = secondsToTime(line.waitTime*line.members.count)
+        
         return cell
     }
     
@@ -214,6 +233,11 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             lineClassToDeliver = selectedLine
             self.performSegue(withIdentifier: "viewLine", sender: self)
         }
+    }
+    
+    func flagButtonPressed(index: IndexPath) {
+        flagIndexRow = index.row
+        let _ = confirmAction("Flag line \(lines[index.row].name)?", identifier: "flag line", sender: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

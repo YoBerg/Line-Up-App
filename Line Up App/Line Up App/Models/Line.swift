@@ -15,15 +15,17 @@ class Line {
     var members: Array<String>
     var maxMembers: Int
     var creator: String
+    var originalCreator: String
     var mySpot: Int?
     var searchIndex: Int
     
-    init(name: String, waitTime: Int, members: Array<String>, maxMembers: Int, creator: String) {
+    init(name: String, waitTime: Int, members: Array<String>, maxMembers: Int, creator: String, originalCreator: String) {
         self.name = name
         self.waitTime = waitTime
         self.members = members
         self.maxMembers = maxMembers
         self.creator = creator
+        self.originalCreator = originalCreator
         self.mySpot = nil
         self.searchIndex = 0
     }

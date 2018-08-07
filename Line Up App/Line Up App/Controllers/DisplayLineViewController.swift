@@ -59,6 +59,11 @@ class DisplayLineViewController: UIViewController {
                 for member in memberDict {
                     if member.value > userValue! {
                         lineRef.child("members").child(member.key).setValue(member.value-1)
+                        Database.database().reference().child("lines").child(self.managedLine!.name).child("dummies").child(member.key).observeSingleEvent(of: .value, with: { (snapshot) in
+                            if snapshot.value as? Bool != true {
+                                Database.database().reference().child("users").child(member.key).child("queuedLines").child(self.managedLine!.name).setValue(member.value-1)
+                            }
+                        })
                     }
                 }
                 self.interactButton.setTitle("Take a spot", for: .normal)
@@ -67,7 +72,7 @@ class DisplayLineViewController: UIViewController {
                 userRef.child(self.managedLine!.name).setValue(nil)
             } else {
                 print("User is not a member, joining line.")
-                if !bannedArray.contains(User.current.uid) && memberArray.count < maxMembers{
+                if !bannedArray.contains(User.current.uid) && memberArray.count < maxMembers {
                     userRef.child(self.managedLine!.name).setValue(memberArray.count)
                     lineRef.child("members").child(User.current.uid).setValue(memberArray.count)
                     self.interactButton.setTitle("Leave line", for: .normal)

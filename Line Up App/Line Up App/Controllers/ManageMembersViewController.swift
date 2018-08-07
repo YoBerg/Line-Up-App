@@ -14,6 +14,8 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
     var popUpInput: String?
     var dummyName = ""
     
+    @IBOutlet weak var addDummyView: UIView!
+    
     @IBAction func addDummyButtonPressed(_ sender: Any) {
         let popUp = getInput("Creating a dummy member...", identifier: "create dummy", sender: self)
         popUp.inputTextField.keyboardType = UIKeyboardType.alphabet
@@ -24,16 +26,23 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
         if identifier == "kick member" {
             if isInternetAvailable() {
             let memberRef = Database.database().reference().child("lines").child(managedLine).child("members")
+            let userRef = Database.database().reference().child("users")
             memberRef.observeSingleEvent(of: .value) { (snapshot) in
                 if (snapshot.value as? [String: Int]) != nil {
-                        memberRef.child(self.selectedMember!.uid).setValue(nil)
+                    memberRef.child(self.selectedMember!.uid).setValue(nil)
+                    Database.database().reference().child("lines").child(self.managedLine).child("dummies").child(self.selectedMember!.uid).setValue(nil)
                         
                         for member in self.members {
                             if member.spot > self.selectedMember!.spot {
                                 memberRef.child(member.uid).setValue(member.spot-1)
+                                Database.database().reference().child("lines").child(self.managedLine).child("dummies").child(member.uid).observeSingleEvent(of: .value, with: { (snapshot) in
+                                    if snapshot.value as? Bool != true {
+                                        userRef.child(member.uid).child("queuedLines").child(self.managedLine).setValue(member.spot-1)
+                                    }
+                                })
                             }
                         }
-                        Database.database().reference().child("users").child(self.selectedMember!.uid).child("queuedLines").child(self.managedLine).setValue(nil)
+                    Database.database().reference().child("users").child(self.selectedMember!.uid).child("queuedLines").child(self.managedLine).setValue(nil)
                 }
             }
             Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
@@ -48,14 +57,21 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
         } else if identifier == "ban member" {
             if isInternetAvailable() {
             let lineRef = Database.database().reference().child("lines").child(managedLine)
+            let userRef = Database.database().reference().child("users")
             lineRef.observeSingleEvent(of: .value) { (snapshot) in
                 if (snapshot.value as? [String: Any]) != nil {
                     lineRef.child("members").child(self.selectedMember!.uid).setValue(nil)
+                    lineRef.child("dummies").child(self.selectedMember!.uid).setValue(nil)
                     lineRef.child("bannedMembers").child(self.selectedMember!.uid).setValue(true)
                     
                     for member in self.members {
                         if member.spot > self.selectedMember!.spot {
                             lineRef.child("members").child(member.uid).setValue(member.spot-1)
+                            Database.database().reference().child("lines").child(self.managedLine).child("dummies").child(member.uid).observeSingleEvent(of: .value, with: { (snapshot) in
+                                if snapshot.value as? Bool != true {
+                                   userRef.child(member.uid).child("queuedLines").child(self.managedLine).setValue(member.spot-1)
+                                }
+                            })
                         }
                     }
                     Database.database().reference().child("users").child(self.selectedMember!.uid).child("queuedLines").child(self.managedLine).setValue(nil)
@@ -78,14 +94,26 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
                     if (snapshot.value as? [String: Any]) != nil {
                         let newSpot: Int = Int(self.popUpInput!)! > self.members.count ? self.members.count-1 : Int(self.popUpInput!)!-1
                         lineRef.child("members").child(self.selectedMember!.uid).setValue(newSpot)
-                        Database.database().reference().child("users").child(self.selectedMember!.uid).child("queuedLines").child(self.managedLine).setValue(newSpot)
+                        Database.database().reference().child("lines").child(self.managedLine).child("dummies").child(self.selectedMember!.uid).observeSingleEvent(of: .value, with: { (snapshot) in
+                            if snapshot.value as? Bool != true {
+                                userRef.child(self.selectedMember!.uid).child("queuedLines").child(self.managedLine).setValue(newSpot)
+                            }
+                        })
                         for member in self.members {
                             if member.spot > self.selectedMember!.spot && member.spot <= newSpot {
                                 lineRef.child("members").child(member.uid).setValue(member.spot-1)
-                                userRef.child(member.uid).child("queuedLines").child(self.managedLine).setValue(member.spot-1)
+                                Database.database().reference().child("lines").child(self.managedLine).child("dummies").child(member.uid).observeSingleEvent(of: .value, with: { (snapshot) in
+                                    if snapshot.value as? Bool != true {
+                                        userRef.child(member.uid).child("queuedLines").child(self.managedLine).setValue(member.spot-1)
+                                    }
+                                })
                             } else if member.spot >= newSpot && member.spot < self.selectedMember!.spot {
                                 lineRef.child("members").child(member.uid).setValue(member.spot+1)
-                                userRef.child(member.uid).child("queuedLines").child(self.managedLine).setValue(member.spot+1)
+                                Database.database().reference().child("lines").child(self.managedLine).child("dummies").child(member.uid).observeSingleEvent(of: .value, with: { (snapshot) in
+                                    if snapshot.value as? Bool != true {
+                                        userRef.child(member.uid).child("queuedLines").child(self.managedLine).setValue(member.spot+1)
+                                    }
+                                })
                             }
                         }
                     }
@@ -140,7 +168,14 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
                 memberRef.observeSingleEvent(of: .value) { (snapshot) in
                     var memberDict = snapshot.value as? [String: Any]
                     if !(self.isNsnullOrNil(memberDict)) { memberDict = [:] }
+                    if memberDict![self.dummyName] != nil {
+                        Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { (_) in
+                            let _ = self.createErrorPopUp("Dummy already exists with name \(self.dummyName)")
+                            return
+                        })
+                    }
                     memberRef.child(self.dummyName).setValue(memberDict!.count)
+                    lineRef.child("dummies").child(self.dummyName).setValue(true)
                 }
                 Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
                     self.refreshButtonPressed(self)
@@ -174,8 +209,6 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
                 self.members = self.members.sorted(by: { $0.spot < $1.spot })
             }
         }
-        } else {
-            
         }
         manageMemberToolBar.isHidden = true
     }
@@ -198,6 +231,7 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
         super.viewDidLoad()
         membersTableView.delegate = self
         membersTableView.dataSource = self
+        addDummyView.layer.borderWidth = 1
     }
     override func viewWillAppear(_ animated: Bool) {
         self.navigationBarFromHome.isHidden = hidingNavBarState
