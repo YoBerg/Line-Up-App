@@ -1,33 +1,27 @@
-Upgrade Firebase plan if app becomes bigger.
-
-Require email verification.
-
-Refactor dummy checks to be in a function.
-
-Refactor all brute-force searches in order to prevent excessive internet usage.
+--- Upgrade Firebase plan if app becomes bigger. ---
 
 Favorite lines.
 
 Implement support for rotation.
 
-Notifications.
+Refactor dummy checks to be in a function.
 
-Find by location.
+Refactor all brute-force searches in order to prevent excessive internet usage.
 
-Make bottom home buttons more recognizable.
+Require email verification.
 
-Add loading spinner to notify users that their content is coming. Slowly...
+Require email verification on sign-up.
+
+Add loading spinner to notify users that their content is coming. (For slower connections)
 
 *** PUBLISH. ***
 
-Ready app to submit to app store.
-
-Create icon.
-
-Enter Apple Dev Program.
+Notifications.
 
 ------------------
 
-User Test notes
+User Test notes:
 
--Change 1st spot color
+Customize meet-up location.
+
+Customize message when you are next up.

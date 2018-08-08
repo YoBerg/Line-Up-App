@@ -20,11 +20,10 @@ class DisplayLineViewController: UIViewController {
     @IBOutlet weak var waitTimeLabel: UILabel!
     @IBOutlet weak var interactButton: UIButton!
     @IBOutlet weak var spotNumberLabel: UILabel!
+    @IBOutlet weak var endLocationLabel: UILabel!
     
     @IBAction func homeButtonPressed(_ sender: Any) {
-        dismiss(animated: true) {
-            print("returning home...")
-        }
+        dismiss(animated: true) {}
     }
     
     override func viewDidLoad() {
@@ -53,7 +52,6 @@ class DisplayLineViewController: UIViewController {
             let maxMembers: Int = lineDict["maxMembers"] as! Int
             
             if memberArray.contains(User.current.uid) {
-                print("User is a member, leaving line.")
                 let userValue = memberDict[User.current.uid]
                 
                 for member in memberDict {
@@ -71,7 +69,6 @@ class DisplayLineViewController: UIViewController {
                 lineRef.child("members").child(User.current.uid).setValue(nil)
                 userRef.child(self.managedLine!.name).setValue(nil)
             } else {
-                print("User is not a member, joining line.")
                 if !bannedArray.contains(User.current.uid) && memberArray.count < maxMembers {
                     userRef.child(self.managedLine!.name).setValue(memberArray.count)
                     lineRef.child("members").child(User.current.uid).setValue(memberArray.count)
@@ -119,12 +116,13 @@ class DisplayLineViewController: UIViewController {
                 self.creatorNameLabel.text = "Created by \(self.managedLine!.creator)"
                 self.numberOfMembersLabel.preferredMaxLayoutWidth = 300
                 self.numberOfMembersLabel.text = "\(self.managedLine!.members.count) / \(self.managedLine!.maxMembers) Members"
+                self.endLocationLabel.text = lineDict["endLocation"] as? String
                 var selfIndex = 0
                 if self.managedLine!.members.contains(User.current.uid) {
                     self.interactButton.setTitle("Leave line", for: .normal)
                     selfIndex = memberDict[User.current.uid]!+1
                     self.waitTimeLabel.preferredMaxLayoutWidth = 300
-                    self.waitTimeLabel.text = "Approximately \(self.secondsToTime(self.managedLine!.waitTime * selfIndex)) left."
+                    self.waitTimeLabel.text = "Approximately \(self.secondsToTime(self.managedLine!.waitTime * (selfIndex-1))) left."
                     self.spotNumberLabel.isHidden = false
                 } else {
                     self.interactButton.setTitle("Take a spot", for: .normal)
@@ -133,16 +131,14 @@ class DisplayLineViewController: UIViewController {
                 }
                 if memberDict.count == 1 && memberArray.contains(User.current.uid) {
                     self.spotNumberLabel.text = "You are first!"
-                    self.mainView.backgroundColor = UIColor(red: CGFloat(87/255), green: CGFloat(1), blue: CGFloat(117/255), alpha: CGFloat(1))
+                    self.mainView.backgroundColor = UIColor(red: CGFloat(0.6), green: CGFloat(0.9373), blue: CGFloat(0.3569), alpha: CGFloat(1))
                 } else {
                     self.spotNumberLabel.text = "Spot #\(selfIndex)"
                     self.mainView.backgroundColor = UIColor(red: CGFloat(1), green: CGFloat(0.9607), blue: CGFloat(0.8471), alpha: CGFloat(1))
                 }
             } else {
                 let _ = self.createErrorPopUp("Line no longer exists!")
-                self.dismiss(animated: true, completion: {
-                    print("returning home...")
-                })
+                self.dismiss(animated: true) {}
             }
         }
         } else {

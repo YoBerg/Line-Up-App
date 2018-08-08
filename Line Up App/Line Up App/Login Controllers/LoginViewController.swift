@@ -45,6 +45,7 @@ extension LoginViewController: FUIAuthDelegate {
     func authUI(_ authUI: FUIAuth, didSignInWith authDataResult: AuthDataResult?, error: Error?) {
         if let error = error {
             if isInternetAvailable() {
+                let _ = createErrorPopUp("Could not sign in! \(error.localizedDescription)")
                 print(error.localizedDescription)
             } else {
                 let _ = createErrorPopUp("No internet connection!")

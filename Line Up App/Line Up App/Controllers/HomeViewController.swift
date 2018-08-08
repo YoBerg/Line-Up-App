@@ -226,7 +226,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedLine = lines[indexPath.row]
         if selectedLine.creator == User.current.username {
-            print("Manage Line \(selectedLine.name)")
             lineNameToDeliver = selectedLine.name
             self.performSegue(withIdentifier: "manageLine", sender: self)
         } else {
@@ -237,7 +236,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func flagButtonPressed(index: IndexPath) {
         flagIndexRow = index.row
-        let _ = confirmAction("Flag line \(lines[index.row].name)?", identifier: "flag line", sender: self)
+        let _ = confirmAction("Flag line '\(lines[index.row].name)' for inappropriate name?", identifier: "flag line", sender: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

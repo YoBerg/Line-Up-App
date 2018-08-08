@@ -23,6 +23,7 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
     @IBOutlet weak var editLineButton: UIButton!
     @IBOutlet weak var manageMembersButton: UIButton!
     @IBOutlet weak var deleteLineButton: UIButton!
+    @IBOutlet weak var endLocationLabel: UILabel!
     
     @IBOutlet weak var editLineView: UIView!
     @IBOutlet weak var changeMaxMembersTextField: ClosableTextField!
@@ -98,6 +99,7 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
             let lineDictMembers = members != nil || members?.count == 0 ? Array(members!.keys) : []
             let numberOfMembers: Int = lineDictMembers.count
             self.numberOfMembersLabel.text = "\(numberOfMembers) / \(lineDict["maxMembers"] ?? 0) Members"
+            self.endLocationLabel.text = lineDict["endLocation"] as? String
         }
             self.lineNameLabel.text = managedLine!
         } else {
@@ -111,9 +113,7 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
     @IBAction func unwindWithSegue(segue: UIStoryboardSegue) {
     }
     @IBAction func hidingHomeButtonPressed(_ sender: Any) {
-        dismiss(animated: true) {
-            print("returning home...")
-        }
+        dismiss(animated: true) {}
     }
     
     @IBAction func homeButtonPressed(_ sender: Any) {
@@ -194,25 +194,23 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
     @IBAction func refreshButtonPressed(_ sender: Any) {
         if isInternetAvailable() {
             waitTimeLabel.isHidden = false
-        let lineRef = Database.database().reference().child("lines").child(managedLine!)
-        lineRef.observe(.value) { (snapshot) in
-            if let lineDict = snapshot.value as? [String : Any] {
-                let membersFromDict = lineDict["members"] as? [String: Int]
-                let members: [String: Int] = membersFromDict != nil ? membersFromDict! : [:]
-                let waitTime = lineDict["waitTime"] as! Int
-                let maxMembers = lineDict["maxMembers"] as! Int
-                self.numberOfMembersLabel.preferredMaxLayoutWidth = 300
-                self.numberOfMembersLabel.text = "\(members.count) / \(maxMembers) Members"
-                self.waitTimeLabel.preferredMaxLayoutWidth = 300
-                self.waitTimeLabel.text = "\(self.secondsToTime(waitTime)) / spot."
-            } else {
-                let _ = self.createErrorPopUp("Line no longer exists!")
-                self.performSegue(withIdentifier: "unwindWithSegue", sender: self)
-                self.dismiss(animated: true) {
-                    print("returning home...")
+            let lineRef = Database.database().reference().child("lines").child(managedLine!)
+            lineRef.observe(.value) { (snapshot) in
+                if let lineDict = snapshot.value as? [String : Any] {
+                    let membersFromDict = lineDict["members"] as? [String: Int]
+                    let members: [String: Int] = membersFromDict != nil ? membersFromDict! : [:]
+                    let waitTime = lineDict["waitTime"] as! Int
+                    let maxMembers = lineDict["maxMembers"] as! Int
+                    self.numberOfMembersLabel.preferredMaxLayoutWidth = 300
+                    self.numberOfMembersLabel.text = "\(members.count) / \(maxMembers) Members"
+                    self.waitTimeLabel.preferredMaxLayoutWidth = 300
+                    self.waitTimeLabel.text = "\(self.secondsToTime(waitTime)) / spot."
+                } else {
+                    let _ = self.createErrorPopUp("Line no longer exists!")
+                    self.performSegue(withIdentifier: "unwindWithSegue", sender: self)
+                    self.dismiss(animated: true) {}
                 }
             }
-        }
         }
     }
     
@@ -222,9 +220,7 @@ class ManageLineViewController: UIViewController, PopUpViewControllerListener {
                 Database.database().reference().child("lines").child(managedLine!).setValue(nil)
                 Database.database().reference().child("users").child(User.current.uid).child("hostedLines").child(managedLine!).setValue(nil)
                 self.performSegue(withIdentifier: "unwindWithSegue", sender: self)
-                dismiss(animated: true) {
-                    print("returning home...")
-                }
+                dismiss(animated: true) {}
             }
             else if identifier == "change max members" {
                 let lineRef = Database.database().reference().child("lines").child(managedLine!)

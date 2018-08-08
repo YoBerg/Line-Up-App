@@ -88,11 +88,17 @@ class ManageMembersViewController: UIViewController, UITableViewDataSource, UITa
             manageMemberToolBar.isHidden = true
         } else if identifier == "move member" {
             if isInternetAvailable() {
+                guard let inputAsInt = Int(popUpInput!) else {
+                    Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
+                        let _ = self.createErrorPopUp("Invalid input! Please use a whole number!")
+                    }
+                    return
+                }
                 let lineRef = Database.database().reference().child("lines").child(managedLine)
                 let userRef = Database.database().reference().child("users")
                 lineRef.observeSingleEvent(of: .value) { (snapshot) in
                     if (snapshot.value as? [String: Any]) != nil {
-                        let newSpot: Int = Int(self.popUpInput!)! > self.members.count ? self.members.count-1 : Int(self.popUpInput!)!-1
+                        let newSpot: Int = inputAsInt > self.members.count ? self.members.count-1 : inputAsInt-1
                         lineRef.child("members").child(self.selectedMember!.uid).setValue(newSpot)
                         Database.database().reference().child("lines").child(self.managedLine).child("dummies").child(self.selectedMember!.uid).observeSingleEvent(of: .value, with: { (snapshot) in
                             if snapshot.value as? Bool != true {
