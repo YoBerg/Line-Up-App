@@ -64,6 +64,9 @@ extension LoginViewController: FUIAuthDelegate {
         userRef.observeSingleEvent(of: .value, with: { [unowned self] (snapshot) in
             if let user = User(snapshot: snapshot) {
                 User.setCurrent(user, writeToUserDefaults: true)
+                if let notif_token = Constants.Tokens.deviceToken {
+                    Database.database().reference().child(User.current.uid).child("notification_tokens").child(notif_token).setValue(true)
+                }
                 
                 let initialViewController = UIStoryboard.initialViewController(for: .main)
                 self.view.window?.rootViewController = initialViewController

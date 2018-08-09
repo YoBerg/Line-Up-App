@@ -13,6 +13,7 @@ import SystemConfiguration
 import UserNotifications
 import FirebaseInstanceID
 import FirebaseMessaging
+import FirebaseDatabase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
@@ -139,6 +140,7 @@ extension AppDelegate {
         
         let token = tokenParts.joined()
         print("Device Token: \(token)")
+        Constants.Tokens.deviceToken = token
     }
     
     func application(_ application: UIApplication,

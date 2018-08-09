@@ -19,4 +19,7 @@ struct Constants {
         static let ListLinesTableViewCell = "ListLinesTableViewCell"
         static let ListMembersTableViewCell = "ListMembersTableViewCell"
     }
+    struct Tokens {
+        static var deviceToken: String?
+    }
 }
