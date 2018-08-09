@@ -29,6 +29,9 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     @IBAction func signOutButtonTapped(_ sender: UIBarButtonItem) {
         let _ = confirmAction("Are you sure you want to sign out?", identifier: "sign out", sender: self)
+        if let notif_token = Constants.Tokens.deviceToken {
+            Database.database().reference().child("users").child(User.current.uid).child("notification_tokens").child(notif_token).setValue(nil)
+        }
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
