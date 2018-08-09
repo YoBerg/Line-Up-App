@@ -64,7 +64,9 @@ extension LoginViewController: FUIAuthDelegate {
         userRef.observeSingleEvent(of: .value, with: { [unowned self] (snapshot) in
             if let user = User(snapshot: snapshot) {
                 User.setCurrent(user, writeToUserDefaults: true)
+                print("attempting to push token to database")
                 if let notif_token = Constants.Tokens.deviceToken {
+                    print("pushing token \(notif_token)")
                     Database.database().reference().child("users").child(User.current.uid).child("notification_tokens").child(notif_token).setValue(true)
                 }
                 

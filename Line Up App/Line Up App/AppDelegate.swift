@@ -134,13 +134,16 @@ extension AppDelegate {
     
     func application(_ application: UIApplication,
                      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        let tokenParts = deviceToken.map { data -> String in
-            return String(format: "%02.2hhx", data)
+//        let tokenParts = deviceToken.map { data -> String in
+//            return String(format: "%02.2hhx", data)
+//        }
+//
+//        let token = tokenParts.joined()
+//        print("Device Token: \(token)")
+        if let refreshedToken = InstanceID.instanceID().token() {
+            print("InstanceID token: \(refreshedToken)")
+            Constants.Tokens.deviceToken = refreshedToken
         }
-        
-        let token = tokenParts.joined()
-        print("Device Token: \(token)")
-        Constants.Tokens.deviceToken = token
     }
     
     func application(_ application: UIApplication,
