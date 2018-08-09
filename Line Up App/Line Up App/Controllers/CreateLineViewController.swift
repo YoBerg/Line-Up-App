@@ -142,6 +142,7 @@ class CreateLineViewController: UIViewController, UITextFieldDelegate, UITextVie
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
+        messageLabel.text = textView.text
         messageView.isHidden = false
         messageLabel.isHidden = false
     }

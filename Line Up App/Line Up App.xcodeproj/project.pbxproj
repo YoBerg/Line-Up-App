@@ -24,8 +24,8 @@
 		FA50B723210BE3F300E7C425 /* to-do.txt in Resources */ = {isa = PBXBuildFile; fileRef = FA50B722210BE3F300E7C425 /* to-do.txt */; };
 		FA542FAD21113BB6003A3482 /* PopUpService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA542FAC21113BB6003A3482 /* PopUpService.swift */; };
 		FA542FAF21122E9A003A3482 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA542FAE21122E9A003A3482 /* StringExtensions.swift */; };
+		FA5DCD18211BFBB9002DF015 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA5DCD17211BFBB9002DF015 /* GoogleService-Info.plist */; };
 		FAB6670B21065B370077DB3A /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAB6670A21065B370077DB3A /* Login.storyboard */; };
-		FAB6670D21068AD00077DB3A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAB6670C21068AD00077DB3A /* GoogleService-Info.plist */; };
 		FAB667112107974C0077DB3A /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB667102107974C0077DB3A /* LoginViewController.swift */; };
 		FAB6671321079FB10077DB3A /* CreateLineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6671221079FB10077DB3A /* CreateLineViewController.swift */; };
 		FAB667152107A0620077DB3A /* DisplayLineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB667142107A0620077DB3A /* DisplayLineViewController.swift */; };
@@ -57,8 +57,9 @@
 		FA50B722210BE3F300E7C425 /* to-do.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "to-do.txt"; sourceTree = "<group>"; };
 		FA542FAC21113BB6003A3482 /* PopUpService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpService.swift; sourceTree = "<group>"; };
 		FA542FAE21122E9A003A3482 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
+		FA5DCD16211BE07B002DF015 /* Line Up App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Line Up App.entitlements"; sourceTree = "<group>"; };
+		FA5DCD17211BFBB9002DF015 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FAB6670A21065B370077DB3A /* Login.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
-		FAB6670C21068AD00077DB3A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FAB667102107974C0077DB3A /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		FAB6671221079FB10077DB3A /* CreateLineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateLineViewController.swift; sourceTree = "<group>"; };
 		FAB667142107A0620077DB3A /* DisplayLineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLineViewController.swift; sourceTree = "<group>"; };
@@ -120,6 +121,7 @@
 		FA2A0C5A210654C900C28559 /* Line Up App */ = {
 			isa = PBXGroup;
 			children = (
+				FA5DCD16211BE07B002DF015 /* Line Up App.entitlements */,
 				FAEF5ADD210FA1FA0020F108 /* Login Controllers */,
 				FA50B7152107E53800E7C425 /* Extensions */,
 				FAB6670F21069AD00077DB3A /* Services */,
@@ -172,8 +174,8 @@
 		FAB667072106564A0077DB3A /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				FAB6670C21068AD00077DB3A /* GoogleService-Info.plist */,
 				FA2A0C67210654CA00C28559 /* Info.plist */,
+				FA5DCD17211BFBB9002DF015 /* GoogleService-Info.plist */,
 				FA50B70F2107E2C900E7C425 /* Constants.swift */,
 			);
 			path = "Supporting Files";
@@ -242,6 +244,11 @@
 				TargetAttributes = {
 					FA2A0C57210654C900C28559 = {
 						CreatedOnToolsVersion = 9.4.1;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -271,9 +278,9 @@
 				FA50B723210BE3F300E7C425 /* to-do.txt in Resources */,
 				FA2A0C66210654C900C28559 /* LaunchScreen.storyboard in Resources */,
 				FA2A0C63210654C900C28559 /* Assets.xcassets in Resources */,
-				FAB6670D21068AD00077DB3A /* GoogleService-Info.plist in Resources */,
 				FAB6670B21065B370077DB3A /* Login.storyboard in Resources */,
 				FA2A0C61210654C900C28559 /* Main.storyboard in Resources */,
+				FA5DCD18211BFBB9002DF015 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,6 +296,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-Line Up App/Pods-Line Up App-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
@@ -296,6 +304,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
@@ -511,14 +520,15 @@
 			baseConfigurationReference = FBD0E633122681EF023061C7 /* Pods-Line Up App.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Line Up App/Line Up App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = NHN5D7W37C;
+				DEVELOPMENT_TEAM = 4P8JRB9G6Z;
 				INFOPLIST_FILE = "$(SRCROOT)/Line Up App/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.yohanberg.Line-Up-App";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yohanberg.Streamline;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -530,14 +540,15 @@
 			baseConfigurationReference = 2A6DCE6D0BE3C8505F6FB640 /* Pods-Line Up App.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Line Up App/Line Up App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = NHN5D7W37C;
+				DEVELOPMENT_TEAM = 4P8JRB9G6Z;
 				INFOPLIST_FILE = "$(SRCROOT)/Line Up App/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.yohanberg.Line-Up-App";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yohanberg.Streamline;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
